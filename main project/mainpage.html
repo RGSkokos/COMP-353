@@ -1,1 +1,147 @@
-#test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility and Student Management</title>
+</head>
+<body>
+    <h1>Facility and Student Management System</h1>
+
+    <!-- Create Facility Form -->
+    <h2>Create Facility</h2>
+    <form id="createFormFacility">
+        <label for="facilityName">Facility Name:</label>
+        <input type="text" id="facilityName" name="facilityName" required>
+        <button type="submit">Create Facility</button>
+    </form>
+
+    <!-- Display Facilities -->
+    <h2>Facilities List</h2>
+    <ul id="facilitiesList">
+        <!-- JavaScript will populate this list -->
+    </ul>
+
+    <!-- Create Student Form -->
+    <h2>Create Student</h2>
+    <form id="createFormStudent">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" name="studentName" required>
+        <label for="facilitySelectStudent">Select Facility:</label>
+        <select id="facilitySelectStudent" name="facilitySelectStudent">
+            <!-- JavaScript will populate this dropdown -->
+        </select>
+        <button type="submit">Create Student</button>
+    </form>
+
+    <!-- Display Students -->
+    <h2>Students List</h2>
+    <ul id="studentsList">
+        <!-- JavaScript will populate this list -->
+    </ul>
+
+    <!-- Edit and Delete Buttons for Students -->
+    <h2>Edit / Delete Student</h2>
+    <form id="editDeleteFormStudent">
+        <label for="studentSelect">Select Student:</label>
+        <select id="studentSelect" name="studentSelect">
+            <!-- JavaScript will populate this dropdown -->
+        </select>
+        <button type="button" id="editStudentButton">Edit Student</button>
+        <button type="button" id="deleteStudentButton">Delete Student</button>
+    </form>
+
+    <!-- JavaScript for Dynamic Functionality -->
+    <script>
+        // Sample data for facilities and students (replace this with actual data)
+        const facilities = [
+            { id: 1, name: "Facility 1" },
+            { id: 2, name: "Facility 2" },
+            { id: 3, name: "Facility 3" }
+        ];
+
+        const students = [
+            { id: 1, name: "Student 1", facilityId: 1 },
+            { id: 2, name: "Student 2", facilityId: 2 },
+            { id: 3, name: "Student 3", facilityId: 1 }
+        ];
+
+        const createFormFacility = document.getElementById("createFormFacility");
+        const facilitiesList = document.getElementById("facilitiesList");
+        const createFormStudent = document.getElementById("createFormStudent");
+        const studentsList = document.getElementById("studentsList");
+        const facilitySelectStudent = document.getElementById("facilitySelectStudent");
+        const studentSelect = document.getElementById("studentSelect");
+        const editStudentButton = document.getElementById("editStudentButton");
+        const deleteStudentButton = document.getElementById("deleteStudentButton");
+
+        // Populate facilities list and dropdown
+        function populateFacilities() {
+            facilitiesList.innerHTML = "";
+            facilitySelectStudent.innerHTML = "";
+            facilities.forEach(facility => {
+                const listItem = document.createElement("li");
+                listItem.textContent = facility.name;
+                facilitiesList.appendChild(listItem);
+
+                const facilityOption = document.createElement("option");
+                facilityOption.value = facility.id;
+                facilityOption.textContent = facility.name;
+                facilitySelectStudent.appendChild(facilityOption);
+            });
+        }
+
+        // Populate students list and dropdown
+        function populateStudents() {
+            studentsList.innerHTML = "";
+            studentSelect.innerHTML = "<option value=''>Select a Student</option>";
+            students.forEach(student => {
+                const listItem = document.createElement("li");
+                const facilityName = facilities.find(facility => facility.id === student.facilityId).name;
+                listItem.textContent = `${student.name} (Facility: ${facilityName})`;
+                studentsList.appendChild(listItem);
+
+                const studentOption = document.createElement("option");
+                studentOption.value = student.id;
+                studentOption.textContent = student.name;
+                studentSelect.appendChild(studentOption);
+            });
+        }
+
+        // Event listener for create facility form submission
+        createFormFacility.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const facilityName = document.getElementById("facilityName").value;
+            facilities.push({ id: facilities.length + 1, name: facilityName });
+            populateFacilities();
+            createFormFacility.reset();
+        });
+
+        // Event listener for create student form submission
+        createFormStudent.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const studentName = document.getElementById("studentName").value;
+            const selectedFacilityId = facilitySelectStudent.value;
+            students.push({ id: students.length + 1, name: studentName, facilityId: parseInt(selectedFacilityId) });
+            populateStudents();
+            createFormStudent.reset();
+        });
+
+        // Event listener for edit student button click
+        editStudentButton.addEventListener("click", function () {
+            const selectedStudentId = studentSelect.value;
+            console.log("Edit student with ID:", selectedStudentId);
+        });
+
+        // Event listener for delete student button click
+        deleteStudentButton.addEventListener("click", function () {
+            const selectedStudentId = studentSelect.value;
+            console.log("Delete student with ID:", selectedStudentId);
+        });
+
+        // Initial population of facilities and students
+        populateFacilities();
+        populateStudents();
+    </script>
+</body>
+</html>
