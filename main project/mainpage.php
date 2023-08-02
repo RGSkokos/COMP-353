@@ -46,7 +46,7 @@
         $conn->close();
         }
 
-    // Create a new Person
+    /*// Create a new Person
             function createPeople($medicareID, $firstName, $lastName, $dOB, $MedicareExpiryDate,
             $phone, $address, $city, $province, $postalCode, $email) {
 
@@ -84,9 +84,10 @@
 
             $conn->close();
             }
-        //THIS NEEDS TO BE DISCUSSED//    
+*/
         // Create a new student
-        function addStudent($medicareID, $firstName, $lastName, $fID) {
+        function addStudent($medicareID, $firstName, $lastName, $dOB, $MedicareExpiryDate,
+        $phone, $address, $city, $province, $postalCode, $email, $fID) {
         global $servername, $username, $password, $dbname;
         $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -95,6 +96,15 @@
             $firstName = $conn->real_escape_string($firstName);
             $lastName = $conn->real_escape_string($lastName);
             $fID = $conn->real_escape_string($fID);
+            $dOB = $conn->real_escape_string($dOB);
+            $MedicareExpiryDate = $conn->real_escape_string($MedicareExpiryDate);
+            $phone = $conn->real_escape_string($phone);
+            $address = $conn->real_escape_string($address);
+            $city = $conn->real_escape_string($city);
+            $province = $conn->real_escape_string($province);
+            $postalCode = $conn->real_escape_string($postalCode);
+            $email = $conn->real_escape_string($email);
+
 
         // Get today's date
         $startDate = date('Y-m-d');
@@ -102,20 +112,55 @@
         $conn->query($sql);
 
         // Insert into People table
-        $sql = "INSERT INTO People (firstName, lastName) VALUES ('$firstName', '$lastName')";
+        $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
+            phone, address, city, province, postalCode, email) VALUES ('$medicareID',
+            '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
+            '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
+        $conn->query($sql);
+
+        $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate) 
+                VALUES ('$fID', '$medicareID', '$startDate', NULL)";
         $conn->query($sql);
         $conn->close();
     }
 
      // Create a new employee
-        function addEmployee($medicareID, $jobTitle) {
+        function addEmployee($medicareID, $firstName, $lastName, $dOB, $MedicareExpiryDate,
+        $phone, $address, $city, $province, $postalCode, $email, $fID, $jobTitle) {
         global $servername, $username, $password, $dbname;
         $conn = new mysqli($servername, $username, $password, $dbname);
 
         $medicareID = $conn->real_escape_string($medicareID);
+        $firstName = $conn->real_escape_string($firstName);
+        $lastName = $conn->real_escape_string($lastName);
+        $fID = $conn->real_escape_string($fID);
+        $dOB = $conn->real_escape_string($dOB);
+        $MedicareExpiryDate = $conn->real_escape_string($MedicareExpiryDate);
+        $phone = $conn->real_escape_string($phone);
+        $address = $conn->real_escape_string($address);
+        $city = $conn->real_escape_string($city);
+        $province = $conn->real_escape_string($province);
+        $postalCode = $conn->real_escape_string($postalCode);
+        $email = $conn->real_escape_string($email);
         $jobTitle = $conn->real_escape_string($jobTitle);
+
+        // Get today's date
+        $startDate = date('Y-m-d');
+
         $sql = "INSERT INTO Employee (medicareID, jobTitle) VALUES ('$medicareID', '$jobTitle')";
         $conn->query($sql);
+
+        // Insert into People table
+        $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
+            phone, address, city, province, postalCode, email) VALUES ('$medicareID',
+            '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
+            '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
+        $conn->query($sql);
+
+        $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate)
+                VALUES ('$fID', '$medicareID', '$startDate', NULL)";
+        $conn->query($sql);
+
         $conn->close();
     }
 
