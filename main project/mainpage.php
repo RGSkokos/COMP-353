@@ -1,30 +1,120 @@
 #test
 <?php
     // Database connection setup
-    $servername = "localhost";
-    $username = "your_username";
-    $password = "your_password";
-    $dbname = "your_database";
+    $servername = "ycc353.encs.concordia.ca";
+    $username = "ycc353_1";
+    $password = "SoenComp";
+    $dbname = "ycc353_1";
 
-    // Create a new facility
-    function createFacility($name) {
+        // Create a new facility
+        function createFacility($fID, $type, $description, $facilityName, $address,
+        $city, $province, $postalCode, $phoneNumber, $webAddr,
+        $capacity) {
         global $servername, $username, $password, $dbname;
         $conn = new mysqli($servername, $username, $password, $dbname);
 
-        $name = $conn->real_escape_string($name);
-        $sql = "INSERT INTO facilities (name) VALUES ('$name')";
+        // Check for connection errors
+        if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+        }
+
+        // Escape user inputs to prevent SQL injection
+        $fID = $conn->real_escape_string($fID);
+        $type = $conn->real_escape_string($type);
+        $description = $conn->real_escape_string($description);
+        $facilityName = $conn->real_escape_string($facilityName);
+        $address = $conn->real_escape_string($address);
+        $city = $conn->real_escape_string($city);
+        $province = $conn->real_escape_string($province);
+        $postalCode = $conn->real_escape_string($postalCode);
+        $phoneNumber = $conn->real_escape_string($phoneNumber);
+        $webAddr = $conn->real_escape_string($webAddr);
+        $capacity = $conn->real_escape_string($capacity);
+
+        $sql = "INSERT INTO Facilities (fID, type, description, facilityName,
+        address, city, province, postalCode, phoneNumber, webAddr, capacity) VALUES (
+        '$fID', '$type', '$description', '$facilityName', '$address',
+        '$city', '$province', '$postalCode', '$phoneNumber', '$webAddr',
+        '$capacity')";
+
+        if ($conn->query($sql) === TRUE) {
+        echo "Facility added successfully.";
+        } else {
+        echo "Error adding facility: " . $conn->error;
+        }
+
+        $conn->close();
+        }
+
+    // Create a new Person
+            function createPeople($medicareID, $firstName, $lastName, $dOB, $MedicareExpiryDate,
+            $phone, $address, $city, $province, $postalCode, $email) {
+
+            global $servername, $username, $password, $dbname;
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            // Check for connection errors
+            if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+            }
+
+            // Escape user inputs to prevent SQL injection
+            $medicareID = $conn->real_escape_string($medicareID);
+            $firstName = $conn->real_escape_string($firstName);
+            $lastName = $conn->real_escape_string($lastName);
+            $dOB = $conn->real_escape_string($dOB);
+            $MedicareExpiryDate = $conn->real_escape_string($MedicareExpiryDate);
+            $phone = $conn->real_escape_string($phone);
+            $address = $conn->real_escape_string($address);
+            $city = $conn->real_escape_string($city);
+            $province = $conn->real_escape_string($province);
+            $postalCode = $conn->real_escape_string($postalCode);
+            $email = $conn->real_escape_string($email);
+
+            $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
+            phone, address, city, province, postalCode, email) VALUES ('$medicareID',
+            '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
+            '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
+
+            if ($conn->query($sql) === TRUE) {
+            echo "Person added successfully.";
+            } else {
+            echo "Error adding person: " . $conn->error;
+            }
+
+            $conn->close();
+            }
+        //THIS NEEDS TO BE DISCUSSED//    
+        // Create a new student
+        function addStudent($medicareID, $firstName, $lastName, $fID) {
+        global $servername, $username, $password, $dbname;
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Escape user inputs to prevent SQL injection
+            $medicareID = $conn->real_escape_string($medicareID);
+            $firstName = $conn->real_escape_string($firstName);
+            $lastName = $conn->real_escape_string($lastName);
+            $fID = $conn->real_escape_string($fID);
+
+        // Get today's date
+        $startDate = date('Y-m-d');
+        $sql = "INSERT INTO Students (medicareID) VALUES ('$medicareID')";
+        $conn->query($sql);
+
+        // Insert into People table
+        $sql = "INSERT INTO People (firstName, lastName) VALUES ('$firstName', '$lastName')";
         $conn->query($sql);
         $conn->close();
     }
 
-    // Create a new student
-    function createStudent($name, $facilityId) {
+     // Create a new employee
+        function addEmployee($medicareID, $jobTitle) {
         global $servername, $username, $password, $dbname;
         $conn = new mysqli($servername, $username, $password, $dbname);
 
-        $name = $conn->real_escape_string($name);
-        $facilityId = $conn->real_escape_string($facilityId);
-        $sql = "INSERT INTO students (name, facility_id) VALUES ('$name', '$facilityId')";
+        $medicareID = $conn->real_escape_string($medicareID);
+        $jobTitle = $conn->real_escape_string($jobTitle);
+        $sql = "INSERT INTO Employee (medicareID, jobTitle) VALUES ('$medicareID', '$jobTitle')";
         $conn->query($sql);
         $conn->close();
     }
@@ -35,7 +125,7 @@
         $conn = new mysqli($servername, $username, $password, $dbname);
 
         $facilities = array();
-        $sql = "SELECT * FROM facilities";
+        $sql = "SELECT * FROM Facilities";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             $facilities[] = $row;
@@ -50,7 +140,7 @@
         $conn = new mysqli($servername, $username, $password, $dbname);
 
         $students = array();
-        $sql = "SELECT * FROM students";
+        $sql = "SELECT * FROM Students";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             $students[] = $row;
@@ -60,16 +150,16 @@
     }
 
     // Get facility name by ID
-    function getFacilityName($facilityId) {
+    function getFacilityName($fID) {
         global $servername, $username, $password, $dbname;
         $conn = new mysqli($servername, $username, $password, $dbname);
 
-        $facilityId = $conn->real_escape_string($facilityId);
-        $sql = "SELECT name FROM facilities WHERE id = '$facilityId'";
+        $fID = $conn->real_escape_string($fID);
+        $sql = "SELECT facilityName FROM Facilities WHERE id = '$fID'";
         $result = $conn->query($sql);
         $facilityName = "";
         if ($row = $result->fetch_assoc()) {
-            $facilityName = $row['name'];
+            $facilityName = $row['facilityName'];
         }
         $conn->close();
         return $facilityName;
