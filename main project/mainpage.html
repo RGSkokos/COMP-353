@@ -88,17 +88,80 @@
         <!-- JavaScript will populate this list -->
     </ul>
 
+<!-- Create Person Form -->
+<h2>Add Person</h2>
+<form id="addFormPerson">
+    <label for="medicareID">Medicare ID:</label>
+    <input type="text" id="medicareID" name="medicareID" required>
+
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" required>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" required>
+
+    <label for="dOB">Date of Birth:</label>
+    <input type="date" id="dOB" name="dOB" required>
+
+    <label for="MedicareExpiryDate">Medicare Expiry Date:</label>
+    <input type="date" id="MedicareExpiryDate" name="MedicareExpiryDate" required>
+
+    <label for="phone">Phone Number:</label>
+    <input type="text" id="phone" name="phone" required>
+
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" required>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required>
+
+    <label for="province">Province:</label>
+    <input type="text" id="province" name="province" required>
+
+    <label for="postalCode">Postal Code:</label>
+    <input type="text" id="postalCode" name="postalCode" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="role">Select Role:</label>
+    <select id="role" name="role" onchange="toggleJobTitleInput()">
+    <option value="student">Student</option>
+    <option value="employee">Employee</option>
+    </select>
+
+    <label for="jobTitleContainer">Job Title:</label>
+    <input type="jobTitleContainer" id="jobTitleContainer" name="jobTitle" required>
+
+    <div id="jobTitleContainer" style="display: none;">
+    <label for="jobTitle">Job Title:</label>
+    <input type="text" id="jobTitle" name="jobTitle">
+    </div>
+
+    <button type="submit">Add Person</button>
+</form>
+
+
+
+
+
+
+
+
     <!-- Create Student Form -->
-    <h2>Add Student</h2>
+     <!--<h2>Add Student</h2>
     <form id="addFormStudent">
-        <label for="studentName">Student Name:</label>
-        <input type="text" id="studentName" name="studentName" required>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
         <label for="facilitySelectStudent">Select Facility:</label>
         <select id="facilitySelectStudent" name="facilitySelectStudent">
-            <!-- JavaScript will populate this dropdown -->
+           
         </select>
-        <button type="submit">Create Student</button>
+        <button type="submit">Add Student</button>
     </form>
+-->
 
     <!-- Display Students -->
     <h2>Students List</h2>
@@ -117,7 +180,43 @@
         <button type="button" id="deleteStudentButton">Delete Student</button>
     </form>
 
-    <!-- JavaScript for Dynamic Functionality -->
+
+    <!-- Create Employee Form -->
+    <!--<h2>Add Employee</h2>
+    <form id="addFormStudent">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+        <label for="facilitySelectStudent">Select Facility:</label>
+        <select id="facilitySelectStudent" name="facilitySelectStudent">
+            
+        </select>
+        <button type="submit">Add Student</button>
+    </form>
+    -->
+
+
+
+    <!-- Display Students -->
+    <h2>Students List</h2>
+    <ul id="studentsList">
+        <!-- JavaScript will populate this list -->
+    </ul>
+
+    <!-- Edit and Delete Buttons for Students -->
+    <h2>Edit / Delete Student</h2>
+    <form id="editDeleteFormStudent">
+        <label for="studentSelect">Select Student:</label>
+        <select id="studentSelect" name="studentSelect">
+            <!-- JavaScript will populate this dropdown -->
+        </select>
+        <button type="button" id="editStudentButton">Edit Student</button>
+        <button type="button" id="deleteStudentButton">Delete Student</button>
+    </form>
+
+<!--
+    
     <script>
         // Sample data for facilities and students (replace this with actual data)
         const facilities = [
@@ -209,5 +308,131 @@
         populateFacilities();
         populateStudents();
     </script>
+
+-->
+
+<!-- JavaScript for Dynamic Functionality -->
+<script>
+    // Sample data for facilities and students (replace this with actual data)
+    const facilities = [
+        { id: 1, name: "Facility 1" },
+        { id: 2, name: "Facility 2" },
+        { id: 3, name: "Facility 3" }
+    ];
+
+    const students = [
+        { id: 1, name: "Student 1", facilityId: 1 },
+        { id: 2, name: "Student 2", facilityId: 2 },
+        { id: 3, name: "Student 3", facilityId: 1 }
+    ];
+
+    const createFormFacility = document.getElementById("createFormFacility");
+    const facilitiesList = document.getElementById("facilitiesList");
+    const createFormPerson = document.getElementById("addFormPerson");
+    const studentsList = document.getElementById("studentsList");
+    const facilitySelectStudent = document.getElementById("facilitySelectStudent");
+    const studentSelect = document.getElementById("studentSelect");
+    const editStudentButton = document.getElementById("editStudentButton");
+    const deleteStudentButton = document.getElementById("deleteStudentButton");
+    const jobTitleInput = document.getElementById("jobTitleInput");
+
+    // Populate facilities list and dropdown
+    function populateFacilities() {
+        facilitiesList.innerHTML = "";
+        facilitySelectStudent.innerHTML = "";
+        facilities.forEach(facility => {
+            const listItem = document.createElement("li");
+            listItem.textContent = facility.name;
+            facilitiesList.appendChild(listItem);
+
+            const facilityOption = document.createElement("option");
+            facilityOption.value = facility.id;
+            facilityOption.textContent = facility.name;
+            facilitySelectStudent.appendChild(facilityOption);
+        });
+    }
+
+    // Populate students list and dropdown
+    function populateStudents() {
+        studentsList.innerHTML = "";
+        studentSelect.innerHTML = "<option value=''>Select a Student</option>";
+        students.forEach(student => {
+            const listItem = document.createElement("li");
+            const facilityName = facilities.find(facility => facility.id === student.facilityId).name;
+            listItem.textContent = `${student.name} (Facility: ${facilityName})`;
+            studentsList.appendChild(listItem);
+
+            const studentOption = document.createElement("option");
+            studentOption.value = student.id;
+            studentOption.textContent = student.name;
+            studentSelect.appendChild(studentOption);
+        });
+    }
+
+    // Event listener for create facility form submission
+    createFormFacility.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const facilityName = document.getElementById("facilityName").value;
+        facilities.push({ id: facilities.length + 1, name: facilityName });
+        populateFacilities();
+        createFormFacility.reset();
+    });
+
+    // Event listener for create person form submission
+    createFormPerson.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+        const selectedFacilityId = facilitySelectStudent.value;
+        const personType = document.querySelector('input[name="personType"]:checked').value;
+
+        if (personType === "student") {
+            const medicareID = generateMedicareID(); // You need to implement a function to generate a unique medicare ID
+            addStudent(medicareID, firstName, lastName, /* Add other form inputs here */ , selectedFacilityId);
+        } else if (personType === "employee") {
+            const medicareID = generateMedicareID(); // You need to implement a function to generate a unique medicare ID
+            const jobTitle = document.getElementById("jobTitle").value;
+            addEmployee(medicareID, firstName, lastName, /* Add other form inputs here */ , selectedFacilityId, jobTitle);
+        }
+
+        // Reset the form
+        createFormPerson.reset();
+    });
+
+    // Event listener for radio button change to toggle job title input
+    document.querySelectorAll('input[name="personType"]').forEach(radio => {
+        radio.addEventListener("change", function () {
+            if (this.value === "employee") {
+                jobTitleInput.style.display = "block";
+            } else {
+                jobTitleInput.style.display = "none";
+            }
+        });
+    });
+
+    // Function to generate a unique medicare ID
+    function generateMedicareID() {
+        // You need to implement this function to generate a unique medicare ID
+        // For simplicity, you can use a random number or a timestamp-based approach
+        // Make sure the generated ID is unique in your system
+        return "M123456789"; // Replace this with the actual generated ID
+    }
+      // Function to toggle job title input
+      function toggleJobTitleInput() {
+        const selectedRole = document.getElementById("role").value;
+        const jobTitleInput = document.getElementById("jobTitle");
+
+        if (selectedRole === "employee") {
+            jobTitleInput.disabled = false; // Enable the input
+        } else {
+            jobTitleInput.disabled = true; // Disable the input
+            jobTitleInput.value = ""; // Clear the input value when disabled
+        }
+    }
+
+    // Initial population of facilities and students
+    populateFacilities();
+    populateStudents();
+</script>
 </body>
 </html>
