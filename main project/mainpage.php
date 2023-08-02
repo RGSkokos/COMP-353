@@ -185,7 +185,8 @@
         $conn = new mysqli($servername, $username, $password, $dbname);
 
         $students = array();
-        $sql = "SELECT * FROM Students";
+        $sql = "SELECT p.firstName as First Name, p.lastName as Last Name
+        FROM People p, Students s WHERE p.medicareID = s.medicareID";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             $students[] = $row;
