@@ -262,21 +262,21 @@
 
 
 
-    <!-- Display Students -->
-    <h2>Students List</h2>
-    <ul id="studentsList">
+    <!-- Display Employees -->
+    <h2>Employee List</h2>
+    <ul id="employeeList">
         <!-- JavaScript will populate this list -->
     </ul>
 
-    <!-- Edit and Delete Buttons for Students -->
-    <h2>Edit / Delete Student</h2>
-    <form id="editDeleteFormStudent">
-        <label for="studentSelect">Select Student:</label>
-        <select id="studentSelect" name="studentSelect">
+    <!-- Edit and Delete Buttons for employee -->
+    <h2>Edit / Delete Employee</h2>
+    <form id="editDeleteFormEmployee">
+        <label for="employeeSelect">Select Employee:</label>
+        <select id="employeeSelect" name="employeeSelect">
             <!-- JavaScript will populate this dropdown -->
         </select>
-        <button type="button" id="editStudentButton">Edit Student</button>
-        <button type="button" id="deleteStudentButton">Delete Student</button>
+        <button type="button" id="editEmployeeButton">Edit Employee</button>
+        <button type="button" id="deleteEmployeeButton">Delete Employee</button>
     </form>
 
 
@@ -294,6 +294,12 @@
             { id: 2, name: "Student 2", facilityId: 2 },
             { id: 3, name: "Student 3", facilityId: 1 }
         ];
+        // Sample data for employees (replace this with actual data)
+            const employees = [
+            { id: 1, name: "Employee 1", jobTitle: "Manager" },
+            { id: 2, name: "Employee 2", jobTitle: "Secretary" },
+            { id: 3, name: "Employee 3", jobTitle: "Supervisor" }
+        ];
 
         const createFormFacility = document.getElementById("createFormFacility");
         const facilitiesList = document.getElementById("facilitiesList");
@@ -303,6 +309,11 @@
         const studentSelect = document.getElementById("studentSelect");
         const editStudentButton = document.getElementById("editStudentButton");
         const deleteStudentButton = document.getElementById("deleteStudentButton");
+        const addFormEmployee = document.getElementById("addFormEmployee");
+        const employeesList = document.getElementById("employeesList");
+        const employeeSelect = document.getElementById("employeeSelect");
+        const editEmployeeButton = document.getElementById("editEmployeeButton");
+        const deleteEmployeeButton = document.getElementById("deleteEmployeeButton");
 
         // Populate facilities list and dropdown
         function populateFacilities() {
@@ -368,9 +379,48 @@
             console.log("Delete student with ID:", selectedStudentId);
         });
 
-        // Initial population of facilities and students
+         // Function to populate the employees list
+    function populateEmployees() {
+        employeesList.innerHTML = "";
+        employeeSelect.innerHTML = "<option value=''>Select an Employee</option>";
+        employees.forEach(employee => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `${employee.name} (Job Title: ${employee.jobTitle})`;
+            employeesList.appendChild(listItem);
+
+            const employeeOption = document.createElement("option");
+            employeeOption.value = employee.id;
+            employeeOption.textContent = employee.name;
+            employeeSelect.appendChild(employeeOption);
+        });
+    }
+
+            // Event listener for add employee form submission
+            addFormEmployee.addEventListener("submit", function (event) {
+                event.preventDefault();
+                const employeeName = document.getElementById("firstName").value;
+                const jobTitle = document.getElementById("jobTitle").value;
+                employees.push({ id: employees.length + 1, name: employeeName, jobTitle: jobTitle });
+                populateEmployees();
+                addFormEmployee.reset();
+            });
+
+            // Event listener for edit employee button click
+            editEmployeeButton.addEventListener("click", function () {
+                const selectedEmployeeId = employeeSelect.value;
+                console.log("Edit employee with ID:", selectedEmployeeId);
+            });
+
+            // Event listener for delete employee button click
+            deleteEmployeeButton.addEventListener("click", function () {
+                const selectedEmployeeId = employeeSelect.value;
+                console.log("Delete employee with ID:", selectedEmployeeId);
+            });
+
+        // Initial population of facilities, students and employees
         populateFacilities();
         populateStudents();
+        populateEmployees();
     </script>
 
 
