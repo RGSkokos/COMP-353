@@ -44,7 +44,7 @@
         }
     </style>
     <!-- Create Facility Form -->
-<h2>Create Facility</h2>
+    <h2>Create Facility</h2>
     <form id="createFormFacility" action="mainpage.php" method="post">
             <label for="fID">Facility ID:</label>
             <input type="text" id="fID" name="fID" required placeholder="ex: 10">
@@ -80,13 +80,24 @@
             <input type="text" id="capacity" name="capacity" required placeholder="ex: 100">
 
     <button type="submit">Create Facility</button>
-</form>
+    </form>
+    
 
     <!-- Display Facilities -->
     <h2>Facilities List</h2>
     <ul id="facilitiesList">
         <!-- JavaScript will populate this list -->
     </ul>
+    <!-- Edit and Delete Buttons for Facilities -->
+    <h2>Edit / Delete Facility</h2>
+    <form id="editDeleteFormFacilities">
+        <label for="facilitiesSelect">Select Facility:</label>
+        <select id="facilitiesSelect" name="facilitiesSelect">
+            <!-- JavaScript will populate this dropdown -->
+        </select>
+        <button type="button" id="editfacilitiesButton">Edit Facility</button>
+        <button type="button" id="deletefacilitiesButton">Delete Facility</button>
+    </form>
     <style>
         /* CSS for the 3x3 grid layout */
         #addFormStudent {
@@ -127,39 +138,39 @@
     </style>
     <!-- Create Student Form -->
      <h2>Add Student</h2>
-    <form id="addFormStudent">
+    <form id="addFormStudent" action="mainpage.php" method="post">
        <label for="medicareID">Medicare ID:</label>
-    <input type="text" id="medicareID" name="medicareID" required>
+    <input type="text" id="medicareID" name="medicareID" required placeholder="ex: 12345678">
 
     <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" required>
+    <input type="text" id="firstName" name="firstName" required placeholder="ex: John">
 
     <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" required>
+    <input type="text" id="lastName" name="lastName" required placeholder="ex: Doe">
 
     <label for="dOB">Date of Birth:</label>
-    <input type="date" id="dOB" name="dOB" required>
+    <input type="date" id="dOB" name="dOB" required placeholder="ex: 2018-02-21">
 
     <label for="MedicareExpiryDate">Medicare Expiry Date:</label>
-    <input type="date" id="MedicareExpiryDate" name="MedicareExpiryDate" required>
+    <input type="date" id="MedicareExpiryDate" name="MedicareExpiryDate" required placeholder="ex: 2023-02-21">
 
     <label for="phone">Phone Number:</label>
-    <input type="text" id="phone" name="phone" required>
+    <input type="text" id="phone" name="phone" required placeholder="ex: (514) 123-4567">
 
     <label for="address">Address:</label>
-    <input type="text" id="address" name="address" required>
+    <input type="text" id="address" name="address" required placeholder="ex: 12345 rue something">
 
     <label for="city">City:</label>
-    <input type="text" id="city" name="city" required>
+    <input type="text" id="city" name="city" required placeholder="ex: Montreal">
 
     <label for="province">Province:</label>
-    <input type="text" id="province" name="province" required>
+    <input type="text" id="province" name="province" required placeholder="ex: QC">
 
     <label for="postalCode">Postal Code:</label>
-    <input type="text" id="postalCode" name="postalCode" required>
+    <input type="text" id="postalCode" name="postalCode" required placeholder="ex: H2L 1K2">
 
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+    <input type="email" id="email" name="email" required placeholder="ex: example1@gmail.com">
 
     <button type="submit">Add Student</button>
     </form>
@@ -217,93 +228,143 @@
     </style>
 
     <!-- Create Employee Form -->
-<h2>Add Employee</h2>
-    <form id="addFormEmployee">
-       <label for="medicareID">Medicare ID:</label>
-    <input type="text" id="medicareID" name="medicareID" required>
+    <h2>Add Employee</h2>
+    <form id="addFormEmployee" action="mainpage.php" method="post">
+        <label for="medicareID">Medicare ID:</label>
+        <input type="text" id="medicareID" name="medicareID" required placeholder="ex: 12345678">
+    
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required placeholder="ex: John">
+    
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required placeholder="ex: Doe">
+    
+        <label for="dOB">Date of Birth:</label>
+        <input type="date" id="dOB" name="dOB" required placeholder="ex: 2018-02-21">
+    
+        <label for="MedicareExpiryDate">Medicare Expiry Date:</label>
+        <input type="date" id="MedicareExpiryDate" name="MedicareExpiryDate" required placeholder="ex: 2023-02-21">
+    
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone" required placeholder="ex: (514) 123-4567">
+    
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required placeholder="ex: 12345 rue something">
+    
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required placeholder="ex: Montreal">
+    
+        <label for="province">Province:</label>
+        <input type="text" id="province" name="province" required placeholder="ex: QC">
+    
+        <label for="postalCode">Postal Code:</label>
+        <input type="text" id="postalCode" name="postalCode" required placeholder="ex: H2L 1K2">
+    
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="ex: example2@gmail.com">
 
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" required>
-
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" required>
-
-    <label for="dOB">Date of Birth:</label>
-    <input type="date" id="dOB" name="dOB" required>
-
-    <label for="MedicareExpiryDate">Medicare Expiry Date:</label>
-    <input type="date" id="MedicareExpiryDate" name="MedicareExpiryDate" required>
-
-    <label for="phone">Phone Number:</label>
-    <input type="text" id="phone" name="phone" required>
-
-    <label for="address">Address:</label>
-    <input type="text" id="address" name="address" required>
-
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" required>
-
-    <label for="province">Province:</label>
-    <input type="text" id="province" name="province" required>
-
-    <label for="postalCode">Postal Code:</label>
-    <input type="text" id="postalCode" name="postalCode" required>
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-
-    <label for="jobTitle">Job Title:</label>
-    <input type="jobTitle" id="jobTitle" name="jobTitle" required>
+        <label for="jobTitle">Job Title:</label>
+        <input type="jobTitle" id="jobTitle" name="jobTitle" placeholder="ex: security">
 
 
-    <button type="submit">Add Employee</button>
+        <button type="submit">Add Employee</button>
     </form>
-
-
-
-
+    
     <!-- Display Employees -->
-    <h2>Employee List</h2>
-    <ul id="employeeList">
+    <h2>Employees List</h2>
+    <ul id="employeesList">
         <!-- JavaScript will populate this list -->
     </ul>
 
     <!-- Edit and Delete Buttons for employee -->
     <h2>Edit / Delete Employee</h2>
-    <form id="editDeleteFormEmployee">
-        <label for="employeeSelect">Select Employee:</label>
-        <select id="employeeSelect" name="employeeSelect">
+    <form id="editDeleteFormEmployees">
+        <label for="employeesSelect">Select Employee:</label>
+        <select id="employeesSelect" name="employeesSelect">
             <!-- JavaScript will populate this dropdown -->
         </select>
-        <button type="button" id="editEmployeeButton">Edit Employee</button>
-        <button type="button" id="deleteEmployeeButton">Delete Employee</button>
+        <button type="button" id="editEmployeesButton">Edit Employee</button>
+        <button type="button" id="deleteEmployeesButton">Delete Employee</button>
     </form>
 
 
-    
+       <!-- New Infection Form -->
+    <h2>New Infection</h2>
+    <form id="newInfectionForm" action="mainpage.php" method="post">
+        <label for="medicareID">Medicare ID:</label>
+        <input type="text" id="medicareID" name="medicareID" required placeholder="ex: 12345678">
+
+        <label for="infectionName">Infection Name:</label>
+        <select id="infectionName" name="infectionName" required>
+            <option value="">Select an Infection</option>
+            <!-- JavaScript will populate this dropdown -->
+        </select>
+
+        <label for="infectionDate">Infection Date:</label>
+        <input type="date" id="infectionDate" name="infectionDate" required placeholder="ex: 2023-08-03">
+
+        <button type="submit">Add Infection</button>
+    </form>
+
+    <!-- New Vaccine Form -->
+    <h2>New Vaccination</h2>
+    <form id="newVaccineForm" action="mainpage.php" method="post">
+        <label for="medicareID">Medicare ID:</label>
+        <input type="text" id="medicareID" name="medicareID" required placeholder="ex: 12345678">
+
+        <label for="vaccineName">Vaccine Name:</label>
+        <select id="vaccineName" name="vaccineName" required>
+            <option value="">Select a Vaccine</option>
+            <!-- JavaScript will populate this dropdown -->
+         </select>
+
+         <label for="numDose">Number of Doses:</label>
+         <input type="number" id="numDose" name="numDose" required placeholder="ex: 2">
+
+         <label for="vaccineDate">Vaccine Date:</label>
+         <input type="date" id="vaccineDate" name="vaccineDate" required placeholder="ex: 2023-08-03">
+
+         <button type="submit">Add Vaccination</button>
+    </form>
     <script>
         // Sample data for facilities and students (replace this with actual data)
         const facilities = [
-            { id: 1, name: "Facility 1" },
-            { id: 2, name: "Facility 2" },
-            { id: 3, name: "Facility 3" }
+                { id: 1, name: "Facility 1" },
+                { id: 2, name: "Facility 2" },
+                { id: 3, name: "Facility 3" }
         ];
 
         const students = [
-            { id: 1, name: "Student 1", facilityId: 1 },
-            { id: 2, name: "Student 2", facilityId: 2 },
-            { id: 3, name: "Student 3", facilityId: 1 }
+                { id: 1, name: "Student 1", facilityId: 1 },
+                { id: 2, name: "Student 2", facilityId: 2 },
+                { id: 3, name: "Student 3", facilityId: 1 }
         ];
-        // Sample data for employees (replace this with actual data)
-            const employees = [
-            { id: 1, name: "Employee 1", jobTitle: "Manager" },
-            { id: 2, name: "Employee 2", jobTitle: "Secretary" },
-            { id: 3, name: "Employee 3", jobTitle: "Supervisor" }
+        // Sample data for employee (replace this with actual data)
+                const employees = [
+                { id: 1, firstName: "Employee 1", lastName: "Employee Last Name 1", jobTitle: "Manager" },
+                { id: 2, firstName: "Employee 2", lastName: "Employee Last Name 2", jobTitle: "Secretary" },
+                { id: 3, firstName: "Employee 3", lastName: "Employee Last Name 3", jobTitle: "Supervisor" }
         ];
 
+            // Sample data for vaccines (replace this with actual data from the database)
+        const vaccines = [
+                { id: 1, name: "Pfizer-BioNTech" },
+                { id: 2, name: "Moderna" },
+                { id: 3, name: "Johnson & Johnson" }
+        ];
+            // Sample data for infections (replace this with actual data from the database)
+        const infections = [
+                { id: 1, name: "COVID-19" },
+                { id: 2, name: "Influenza" },
+                { id: 3, name: "Common Cold" }
+        ];
+
+        
         const createFormFacility = document.getElementById("createFormFacility");
+        const editfacilitiesButton = document.getElementById("editfacilitiesButton");
+        const deletefacilitiesButton = document.getElementById("deletefacilitiesButton");
         const facilitiesList = document.getElementById("facilitiesList");
-        const createFormStudent = document.getElementById("createFormStudent");
+        const addFormStudent = document.getElementById("addFormStudent");
         const studentsList = document.getElementById("studentsList");
         const facilitySelectStudent = document.getElementById("facilitySelectStudent");
         const studentSelect = document.getElementById("studentSelect");
@@ -311,10 +372,44 @@
         const deleteStudentButton = document.getElementById("deleteStudentButton");
         const addFormEmployee = document.getElementById("addFormEmployee");
         const employeesList = document.getElementById("employeesList");
-        const employeeSelect = document.getElementById("employeeSelect");
-        const editEmployeeButton = document.getElementById("editEmployeeButton");
-        const deleteEmployeeButton = document.getElementById("deleteEmployeeButton");
+        const employeeSelect = document.getElementById("employeesSelect");
+        const editEmployeeButton = document.getElementById("editEmployeesButton");
+        const deleteEmployeeButton = document.getElementById("deleteEmployeesButton");
+        const newVaccineForm = document.getElementById("newVaccineForm");
+        const newInfectionForm = document.getElementById("newInfectionForm");
 
+                // Function to find a facility by its ID
+        function findFacilityById(id) {
+            return facilities.find(facility => facility.id === id);
+        }
+
+        // Event listener for edit facility button click
+        editfacilitiesButton.addEventListener("click", function () {
+            const facilityId = parseInt(prompt("Enter the ID of the facility to edit:"));
+            const facility = findFacilityById(facilityId);
+
+            if (facility) {
+                const newFacilityName = prompt(`Enter the new name for ${facility.name}:`);
+                facility.name = newFacilityName;
+                populateFacilities(); // Refresh the facilities list
+            } else {
+                alert("Facility not found with the provided ID.");
+            }
+        });
+
+        // Event listener for delete facility button click
+        deletefacilitiesButton.addEventListener("click", function () {
+            const facilityId = parseInt(prompt("Enter the ID of the facility to delete:"));
+            const facilityIndex = facilities.findIndex(facility => facility.id === facilityId);
+
+            if (facilityIndex !== -1) {
+                facilities.splice(facilityIndex, 1);
+                populateFacilities(); // Refresh the facilities list
+            } else {
+                alert("Facility not found with the provided ID.");
+            }
+        });       
+                
         // Populate facilities list and dropdown
         function populateFacilities() {
             facilitiesList.innerHTML = "";
@@ -328,104 +423,156 @@
                 facilityOption.value = facility.id;
                 facilityOption.textContent = facility.name;
                 facilitySelectStudent.appendChild(facilityOption);
-            });
-        }
+                });
+            }
 
-        // Populate students list and dropdown
+                // Populate students list and dropdown
         function populateStudents() {
-            studentsList.innerHTML = "";
-            studentSelect.innerHTML = "<option value=''>Select a Student</option>";
-            students.forEach(student => {
-                const listItem = document.createElement("li");
-                const facilityName = facilities.find(facility => facility.id === student.facilityId).name;
-                listItem.textContent = `${student.name} (Facility: ${facilityName})`;
-                studentsList.appendChild(listItem);
+                studentsList.innerHTML = "";
+                studentSelect.innerHTML = "<option value=''>Select a Student</option>";
+                students.forEach(student => {
+                    const listItem = document.createElement("li");
+                    const facilityName = facilities.find(facility => facility.id === student.facilityId).facilityName;
+                    listItem.textContent = `${student.firstName}, ${student.lastName} (Facility: ${facilityName})`;
+                    studentsList.appendChild(listItem);
+            
+                    const studentOption = document.createElement("option");
+                    studentOption.value = student.id;
+                    studentOption.textContent = `${student.firstName}, ${student.lastName} (Facility: ${facilityName})`;
+                    studentSelect.appendChild(studentOption);
+                    });
+            }
 
-                const studentOption = document.createElement("option");
-                studentOption.value = student.id;
-                studentOption.textContent = student.name;
-                studentSelect.appendChild(studentOption);
-            });
-        }
+            // Populate employees list and dropdown
+            function populateEmployees() {
+                    employeesList.innerHTML = "";
+                    employeeSelect.innerHTML = "<option value=''>Select an Employee</option>";
+                    employees.forEach(employee => {
+                        const listItem = document.createElement("li");
+                        listItem.textContent = `${employee.firstName} ${employee.lastName} (Job Title: ${employee.jobTitle})`;
+                        employeesList.appendChild(listItem);
+            
+                        const employeeOption = document.createElement("option");
+                        employeeOption.value = employee.id;
+                        employeeOption.textContent = `${employee.firstName} ${employee.lastName} (Job Title: ${employee.jobTitle})`;
+                        employeeSelect.appendChild(employeeOption);
+                    });
+                }
 
-        // Event listener for create facility form submission
-        createFormFacility.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const facilityName = document.getElementById("facilityName").value;
-            facilities.push({ id: facilities.length + 1, name: facilityName });
-            populateFacilities();
-            createFormFacility.reset();
-        });
+                // Event listener for create facility form submission
+            createFormFacility.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    const facilityName = document.getElementById("facilityName").value;
+                    facilities.push({ id: facilities.length + 1, name: facilityName });
+                    populateFacilities();
+                    createFormFacility.reset();
+                });
 
-        // Event listener for create student form submission
-        createFormStudent.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const studentName = document.getElementById("studentName").value;
-            const selectedFacilityId = facilitySelectStudent.value;
-            students.push({ id: students.length + 1, name: studentName, facilityId: parseInt(selectedFacilityId) });
-            populateStudents();
-            createFormStudent.reset();
-        });
+                // Event listener for create student form submission
+            addFormStudent.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    const studentName = document.getElementById("firstName").value;
+                    const selectedFacilityId = facilitySelectStudent.value;
+                    students.push({ id: students.length + 1, name: studentName, facilityId: parseInt(selectedFacilityId) });
+                    populateStudents();
+                    addFormStudent.reset();
+                });
 
-        // Event listener for edit student button click
-        editStudentButton.addEventListener("click", function () {
-            const selectedStudentId = studentSelect.value;
-            console.log("Edit student with ID:", selectedStudentId);
-        });
+                // Event listener for edit student button click
+            editStudentButton.addEventListener("click", function () {
+                    const selectedStudentId = studentSelect.value;
+                    console.log("Edit student with ID:", selectedStudentId);
+                });
 
-        // Event listener for delete student button click
-        deleteStudentButton.addEventListener("click", function () {
-            const selectedStudentId = studentSelect.value;
-            console.log("Delete student with ID:", selectedStudentId);
-        });
-
-         // Function to populate the employees list
-    function populateEmployees() {
-        employeesList.innerHTML = "";
-        employeeSelect.innerHTML = "<option value=''>Select an Employee</option>";
-        employees.forEach(employee => {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${employee.name} (Job Title: ${employee.jobTitle})`;
-            employeesList.appendChild(listItem);
-
-            const employeeOption = document.createElement("option");
-            employeeOption.value = employee.id;
-            employeeOption.textContent = employee.name;
-            employeeSelect.appendChild(employeeOption);
-        });
-    }
-
+                // Event listener for delete student button click
+            deleteStudentButton.addEventListener("click", function () {
+                    const selectedStudentId = studentSelect.value;
+                    console.log("Delete student with ID:", selectedStudentId);
+                });
             // Event listener for add employee form submission
             addFormEmployee.addEventListener("submit", function (event) {
-                event.preventDefault();
-                const employeeName = document.getElementById("firstName").value;
-                const jobTitle = document.getElementById("jobTitle").value;
-                employees.push({ id: employees.length + 1, name: employeeName, jobTitle: jobTitle });
-                populateEmployees();
-                addFormEmployee.reset();
-            });
-
+                    event.preventDefault();
+                    const employeeName = document.getElementById("firstName").value;
+                    const jobTitle = document.getElementById("jobTitle").value;
+                    employees.push({ id: employees.length + 1, name: employeeName, jobTitle: jobTitle });
+                    populateEmployees();
+                    addFormEmployee.reset();
+                });
             // Event listener for edit employee button click
             editEmployeeButton.addEventListener("click", function () {
-                const selectedEmployeeId = employeeSelect.value;
-                console.log("Edit employee with ID:", selectedEmployeeId);
-            });
+                    const selectedEmployeeId = employeeSelect.value;
+                    console.log("Edit employee with ID:", selectedEmployeeId);
+                });
 
-            // Event listener for delete employee button click
+                // Event listener for delete employee button click
             deleteEmployeeButton.addEventListener("click", function () {
-                const selectedEmployeeId = employeeSelect.value;
-                console.log("Delete employee with ID:", selectedEmployeeId);
-            });
+                    const selectedEmployeeId = employeeSelect.value;
+                    console.log("Delete employee with ID:", selectedEmployeeId);
+                });
 
-        // Initial population of facilities, students and employees
-        populateFacilities();
-        populateStudents();
-        populateEmployees();
+            // Event listener for new vaccine form submission
+            newVaccineForm.addEventListener("submit", function (event) { // Modify this line
+                    event.preventDefault();
+                    const selectedVaccineId = document.getElementById("vaccineName").value;
+                    const numDose = document.getElementById("numDose").value;
+                    const vaccineDate = document.getElementById("vaccineDate").value;
+
+                    // Code to add the new vaccination to the database or perform other actions
+                    console.log("Medicare ID:", document.getElementById("medicareID").value);
+                    console.log("Vaccine Name:", vaccines.find(vaccine => vaccine.id === parseInt(selectedVaccineId)).name);
+                    console.log("Number of Doses:", numDose);
+                    console.log("Vaccine Date:", vaccineDate);
+
+                    // Reset the form after submission
+                    this.reset();
+                });
+                // Function to populate the vaccines dropdown
+            function populateVaccines() {
+                    const vaccineSelect = document.getElementById("vaccineName");
+                    vaccineSelect.innerHTML = "<option value=''>Select a Vaccine</option>";
+                    vaccines.forEach(vaccine => {
+                        const option = document.createElement("option");
+                        option.value = vaccine.id;
+                        option.textContent = vaccine.name;
+                        vaccineSelect.appendChild(option);
+                    });
+                }
+
+                // Event listener for new infection form submission
+            newInfectionForm.addEventListener("submit", function (event) { // Modify this line
+                    event.preventDefault();
+                    const selectedInfectionId = document.getElementById("infectionName").value;
+                    const infectionDate = document.getElementById("infectionDate").value;
+
+                    // Code to add the new infection to the database or perform other actions
+                    console.log("Medicare ID:", document.getElementById("medicareID").value);
+                    console.log("Infection Name:", infections.find(infection => infection.id === parseInt(selectedInfectionId)).name);
+                    console.log("Infection Date:", infectionDate);
+
+                    // Reset the form after submission
+                    this.reset();
+                });
+
+                // Function to populate the infections dropdown
+            function populateInfections() {
+                const infectionSelect = document.getElementById("infectionName");
+                infectionSelect.innerHTML = "<option value=''>Select an Infection</option>";
+                infections.forEach(infection => {
+                    const option = document.createElement("option");
+                    option.value = infection.id;
+                    option.textContent = infection.name;
+                    infectionSelect.appendChild(option);
+                });
+            }
+
+        
+
+                // Initial population of facilities, students,employees, vaccinations and infections
+            populateFacilities();
+            populateStudents();
+            populateEmployees();
+            populateVaccines();
+            populateInfections();
     </script>
-
-
-
-
-
 </body>
 </html>
