@@ -532,9 +532,10 @@
                     populateEmployeesDropdown();
                 });
 
-                    // Function to handle facility edit prompt
+                                    // Function to handle facility edit prompt
+                                // Function to handle facility edit prompt
                 function editFacility() {
-                    const facilityId = prompt("Enter the Facility ID to edit:");
+                    const facilityId = document.getElementById("facilitiesSelect").value;
                     const facility = facilities.find(facility => facility.id == facilityId);
 
                     if (facility) {
@@ -547,9 +548,9 @@
                     }
                 }
 
-                        // Function to handle student edit prompt
+                // Function to handle student edit prompt
                 function editStudent() {
-                    const studentId = prompt("Enter the Student ID to edit:");
+                    const studentId = document.getElementById("studentSelect").value;
                     const student = students.find(student => student.id == studentId);
 
                     if (student) {
@@ -565,7 +566,7 @@
 
                 // Function to handle employee edit prompt
                 function editEmployee() {
-                    const employeeId = prompt("Enter the Employee ID to edit:");
+                    const employeeId = document.getElementById("employeesSelect").value;
                     const employee = employees.find(employee => employee.id == employeeId);
 
                     if (employee) {
@@ -581,6 +582,7 @@
                         alert("Employee not found!");
                     }
                 }
+
                             // Function to populate facilities dropdown for editing
                 function populateFacilitiesDropdown() {
                     const facilitySelectDropdown = document.getElementById("facilitiesSelect");
@@ -617,6 +619,49 @@
                     });
                 }
 
+                                    // Function to handle facility delete prompt
+                    function deleteFacility() {
+                        const facilityId = document.getElementById("facilitiesSelect").value;
+                        const facilityIndex = facilities.findIndex(facility => facility.id == facilityId);
+
+                        if (facilityIndex !== -1) {
+                            facilities.splice(facilityIndex, 1);
+                            populateFacilitiesList();
+                            populateFacilitiesDropdown(); // Update the facilities dropdown
+                        } else {
+                            alert("Facility not found!");
+                        }
+                    }
+
+                    // Function to handle student delete prompt
+                    function deleteStudent() {
+                        const studentId = document.getElementById("studentSelect").value;
+                        const studentIndex = students.findIndex(student => student.id == studentId);
+
+                        if (studentIndex !== -1) {
+                            students.splice(studentIndex, 1);
+                            populateStudentsList();
+                            populateStudentsDropdown(); // Update the students dropdown
+                        } else {
+                            alert("Student not found!");
+                        }
+                    }
+
+                    // Function to handle employee delete prompt
+                    function deleteEmployee() {
+                        const employeeId = document.getElementById("employeesSelect").value;
+                        const employeeIndex = employees.findIndex(employee => employee.id == employeeId);
+
+                        if (employeeIndex !== -1) {
+                            employees.splice(employeeIndex, 1);
+                            populateEmployeesList();
+                            populateEmployeesDropdown(); // Update the employees dropdown
+                        } else {
+                            alert("Employee not found!");
+                        }
+                    }
+                                    
+
 
                 // Event listener for facility edit button
                 editfacilitiesButton.addEventListener("click", editFacility);
@@ -635,6 +680,15 @@
 
                 // Event listener for employee edit button
                 editEmployeeButton.addEventListener("click", editEmployee);
+
+                                // Event listener for facility delete button
+                deletefacilitiesButton.addEventListener("click", deleteFacility);
+
+                // Event listener for student delete button
+                deleteStudentButton.addEventListener("click", deleteStudent);
+
+                // Event listener for employee delete button
+                deleteEmployeeButton.addEventListener("click", deleteEmployee);
 
                         // Populate the lists and dropdowns when the page loads
                 populateFacilitiesList();
