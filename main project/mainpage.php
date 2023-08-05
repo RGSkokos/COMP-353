@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif (!isset($_POST['fID']) || !isset($_POST['type']) || !isset($_POST['description']) || !isset($_POST['facilityName']) || !isset($_POST['address']) || !isset($_POST['city']) || !isset($_POST['province']) || !isset($_POST['postalCode']) || !isset($_POST['phoneNumber']) || !isset($_POST['webAddr']) || !isset($_POST['capacity'])) { // Check if all fields are set
             echo "Please fill in all fields.";
         } else { // otherwise set the values from the form and call the createFacility function
-            createFacility(
+            CreateFacility(
                 $_POST['fID'], $_POST['type'], $_POST['description'],
                 $_POST['facilityName'], $_POST['address'], $_POST['city'],
                 $_POST['province'], $_POST['postalCode'], $_POST['phoneNumber'],
@@ -71,6 +71,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             CreateVaccination($_POST['vaccineName'], $_POST['medicareID'], $_POST['numDose'], $_POST['vaccinationDate']);
         }
+    }
+    //Check if the delete button was pressed for delete facility
+    elseif (isset($_POST['deletefacilitiesButton'])) {
+        //it needs to get the fID from the form somehow
+    }
+    //Check if the delete button was pressed for delete employee
+    elseif (isset($_POST['deleteEmployeesButton'])) {
+        //it needs to get the medicareID from the form somehow
+    }
+    elseif (isset($_POST['deleteStudentButton'])) {
+        //it needs to get the medicareID from the form somehow
     }
 }
 ?>

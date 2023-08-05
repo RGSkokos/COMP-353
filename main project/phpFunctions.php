@@ -1,6 +1,6 @@
 <?php
 // Create a new facility
-function createFacility(
+function CreateFacility(
     $fID,
     $type,
     $description,
@@ -50,7 +50,7 @@ function createFacility(
 }
 
 // Create a new student
-function addStudent(
+function CreateStudent(
     $medicareID,
     $firstName,
     $lastName,
@@ -107,7 +107,7 @@ function addStudent(
 }
 
 // Create a new employee
-function addEmployee(
+function CreateEmployee(
     $medicareID,
     $firstName,
     $lastName,
@@ -344,5 +344,49 @@ function valueExists($table, $column, $value)
     return false;
 }
 
-//function 
+// Function to delete a facility
+function DeleteFacility($fID){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    $fID = $conn->real_escape_string($fID);
+    $sql = "DELETE FROM Facilities WHERE fID = '$fID'";
+    $conn->query($sql);
+    $conn->close();
+}
+
+// Function to delete an employee
+function DeleteEmployee($medicareID){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    $medicareID = $conn->real_escape_string($medicareID);
+    $sql = "DELETE FROM Employee WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+
+    // set employee end date to today in attends table
+    $today = date('Y-m-d');
+    $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+
+    $conn->close();
+}
+
+//Function to delete a student
+function DeleteStudent($medicareID){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    $medicareID = $conn->real_escape_string($medicareID);
+    $sql = "DELETE FROM Student WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+
+    // set student end date to today in attends table
+    $today = date('Y-m-d');
+    $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+
+    $conn->close();
+}
+
 ?>
