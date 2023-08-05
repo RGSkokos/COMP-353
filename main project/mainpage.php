@@ -27,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     // Check if the submit button was pressed for add Student
     elseif (isset($_POST['SubmitAddStudent'])) {
+        // check if student already exists
         if (valueExists('Students', 'medicareID', $_POST['medicareID'])) {
             echo "Student already exists.";
         } elseif (!isset($_POST['medicareID']) || !isset($_POST['firstName']) || !isset($_POST['lastName']) || !isset($_POST['dOB']) || !isset($_POST['MedicareExpiryDate']) || !isset($_POST['phone']) || !isset($_POST['address']) || !isset($_POST['city']) || !isset($_POST['province']) || !isset($_POST['postalCode']) || !isset($_POST['email'])) {

@@ -84,16 +84,22 @@ function addStudent(
 
     // Get today's date
     $startDate = date('Y-m-d');
-    $sql = "INSERT INTO Students (medicareID) VALUES ('$medicareID')";
-    $conn->query($sql);
+    // check if student is already in people table
+    $sql = "SELECT * FROM People WHERE medicareID = '$medicareID'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        echo "Student already exists in People table. Adding to Student table only";
+        $sql = "INSERT INTO Students (medicareID) VALUES ('$medicareID')";
+        $conn->query($sql);
+    } else {
 
-    // Insert into People table
-    $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
+        // Insert into People table
+        $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
             phone, address, city, province, postalCode, email) VALUES ('$medicareID',
             '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
             '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
-    $conn->query($sql);
-
+        $conn->query($sql);
+    } // no occupation in inserting into attends, no fID in HTML either
     $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate) 
                 VALUES ('$fID', '$medicareID', '$startDate', NULL)";
     $conn->query($sql);
@@ -113,7 +119,8 @@ function addEmployee(
     $province,
     $postalCode,
     $email,
-    $fID, //No fID in the HTML? *BUG*
+    $fID,
+    //No fID in the HTML? *BUG*
     $jobTitle
 ) {
     global $servername, $username, $password, $dbname;
@@ -136,16 +143,22 @@ function addEmployee(
     // Get today's date
     $startDate = date('Y-m-d');
 
-    $sql = "INSERT INTO Employee (medicareID, jobTitle) VALUES ('$medicareID', '$jobTitle')";
-    $conn->query($sql);
-
-    // Insert into People table
-    $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
+    //check if employee is already in people table
+    $sql = "SELECT * FROM People WHERE medicareID = '$medicareID'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        echo "Employee already exists in People table. Adding to Employee table only.";
+        $sql = "INSERT INTO Employee (medicareID, jobTitle) VALUES ('$medicareID', '$jobTitle')";
+        $conn->query($sql);
+    } else {
+        echo "Employee does not exist in People table. Adding to People and Employee tables.";
+        // Insert into People table
+        $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
             phone, address, city, province, postalCode, email, jobTitle) VALUES ('$medicareID',
             '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
             '$phone', '$address', '$city', '$province', '$postalCode', '$email', '$jobTitle')";
-    $conn->query($sql);
-
+        $conn->query($sql);
+    } // no occupation in inserting into attends, no fID in HTML either
     $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate)
                 VALUES ('$fID', '$medicareID', '$startDate', NULL)";
     $conn->query($sql);
@@ -159,10 +172,10 @@ function addEmployee(
 // the school principal with the subject "Warning" and the content
 // "Roger Brian, a teacher in your school, tested positive for COVID-19 on January 24, 2023."
 function newInfection(
-    $medicareID, 
-    $infectionName, 
+    $medicareID,
+    $infectionName,
     $infectionDate
-    ) {
+) {
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -211,11 +224,13 @@ function newInfection(
             // compose email
             $to = $presidentEmail;
             $subject = "Warning"; // no where to put subject in emailLogs so I'll just concatenate it in the body
-            $txt = $subject . " $firstName $lastName, a teacher in your school, tested positive for COVID-19 on $infectionDate.";
+            $txt = "$firstName $lastName, a teacher in your school, tested positive for COVID-19 on $infectionDate.";
             //add to emailLogs
-            $sqlEmailLog = "INSERT INTO emailLogs (dateOfEmail, facilityName, receiverEmail, emailBody) VALUES ('$today', '$fID', '$presidentEmail', '$txt')";
-            // how do you add to sent without knowing the emailID?
-
+            $sqlEmailLog = "INSERT INTO emailLogs (dateOfEmail, facilityName, receiverEmail, emailSubject, emailBody) VALUES ('$today', '$fID', '$presidentEmail', '$subject', '$txt')";
+            // get the autoincremented id from the insert
+            $emailID = $conn->insert_id;
+            // add to sent
+            $sqlSent = "INSERT INTO sent (emailID, fID, medicareID) VALUES ('$emailID', '$fID', '$medicareID')";
 
             //clear shedule for 2 weeks
             //$sqlClearSchedule = // NOT SURE HOW TO DO THIS
@@ -224,10 +239,11 @@ function newInfection(
 }
 
 // New Vaccination
-function newVaccination($vaccineName, 
-$medicareID, 
-$numDose, 
-$vaccinationDate
+function newVaccination(
+    $vaccineName,
+    $medicareID,
+    $numDose,
+    $vaccinationDate
 ) {
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
