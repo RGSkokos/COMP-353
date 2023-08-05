@@ -452,6 +452,27 @@
                 <button type="button" id="editVaccinesButton">Edit Vaccination</button>
                 <button type="button" id="deleteVaccinesButton">Delete Vaccination</button>
             </form>
+
+               
+            <!-- Generate Button for Emails -->
+            <h2>Display Emails</h2>
+            <form id="selectFacilityEmails">
+                <label for="facilitySelectEmails">Select Facility:</label>
+                    <select id="facilitySelectEmails" name="facilitySelectEmails" required>
+                         <option value="">Select a Facility</option>
+                         <!-- JavaScript will populate this dropdown -->
+                    </select>
+                <button type="button" id="filterfacilitySelectEmails">Generate Emails</button>
+
+                <!-- Display Emails -->
+                <div class="listContainer">
+                    <h2>Email Log</h2>
+                    <ul id="emailList">
+                    <!-- JavaScript will populate this list -->
+                    </ul>
+                </div>
+            
+</form>
     <script>
                     const facilities = [
                     { 
@@ -503,7 +524,7 @@
 
                     // Sample data for employee (replace this with actual data)
                     const employees = [
-                    { id: 1, medicareID: '12345678', firstName: "Employee 1", lastName: "Employee Last Name 1", dOB: '06/21/2007', MedicareExpiryDate:'06/21/2024', phone:'(514)123-4567',Address:'12345 rue Something', City: 'Montreal', Province: 'QC', postalCode:'H2L 1K2', email:'example4@gmail.com',jobTitle: "Manager",facilityId: 2  },
+                    { id: 1, medicareID: '12345678', firstName: "Employee 1", lastName: "Employee Last Name 1", dOB: '06/21/2007', MedicareExpiryDate:'06/21/2024', phone:'(514)123-4567',Address:'12345 rue Something', City: 'Montreal', Province: 'QC', postalCode:'H2L 1K2', email:'example4@gmail.com',jobTitle: "President",facilityId: 2  },
                     { id: 2, medicareID: '9101121', firstName: "Employee 2", lastName: "Employee Last Name 2",dOB: '07/21/1994', MedicareExpiryDate:'07/21/2024', phone:'(514)123-4567',Address:'12345 rue Something', City: 'Montreal', Province: 'QC', postalCode:'H2L 1K2', email:'example5@gmail.com', jobTitle: "Secretary",facilityId: 2 },
                     { id: 3, medicareID: '31415161', firstName: "Employee 3", lastName: "Employee Last Name 3",dOB: '08/21/1986', MedicareExpiryDate:'08/21/2024', phone:'(514)123-4567',Address:'12345 rue Something', City: 'Montreal', Province: 'QC', postalCode:'H2L 1K2', email:'example6@gmail.com', jobTitle: "Supervisor",facilityId: 3  }
                     ];
@@ -537,7 +558,7 @@
                     { id: 3, name: "Common Cold", medicareID: '52627282', infectionDate: "07/30/2023" , infectionID: 3},
                     ];
 
-                    // Employee Schedule data structure
+                   
                     const employeeSchedules = [
                     { id: 1, medicareID: '12345678', scheduleDate: "08/28/2023", scheduleFacilityID:2, startTime: "08:00", endTime: "16:00" },
                     { id: 2, medicareID: '9101121', scheduleDate: "08/29/2023" , scheduleFacilityID:2, startTime: "09:00", endTime: "17:00"},
@@ -545,6 +566,26 @@
                     
                     
                     ];
+
+                     
+                        const emailLog = [
+                        {
+                            emailID: 1,
+                            dateOfEmail: "08/05/2023",
+                            emailSubject: "Warning: COVID-19 Case at Facility 1",
+                            facilityName: "Facility 1",
+                            receiverEmail: 'example4@gmail.com',
+                            emailBody: "Dear President of F1, \n\nThis is to inform you that there has been a confirmed case of COVID-19 at Facility 1 with Employee 1.",
+                        },
+                        {
+                            emailID: 2,
+                            dateOfEmail: "08/05/2023",
+                            emailSubject: "Warning: COVID-19 Case at Facility 2",
+                            facilityName: "Facility 2",
+                            receiverEmail: 'example5@gmail.com',
+                            emailBody: "Dear President of F2, \n\nThis is to inform you that there has been a confirmed case of COVID-19 at Facility 2 with Employee 2.",
+                        }
+                        ];
 
         
         const createFormFacility = document.getElementById("createFormFacility");
@@ -580,6 +621,7 @@
         const editDeleteFormEmployees = document.getElementById("editDeleteFormEmployees");
         const editScheduleButton = document.getElementById("editScheduleButton");
         const deleteScheduleButton = document.getElementById("deleteScheduleButton");
+        const generateEmailsButton = document.getElementById("filterfacilitySelectEmails");
                         // Function to populate facilities list
                         function populateFacilitiesList() {
                             facilitiesList.innerHTML = "";
@@ -1189,6 +1231,64 @@
                         }
                     }
 
+                    // Function to populate email list based on selected facility
+                    function populateEmailList(selectedFacility) {
+                        const emailList = document.getElementById("emailList");
+                        emailList.innerHTML = "";
+                    
+                        // Filter the email log based on the selected facility
+                        const filteredEmails = emailLog.filter(
+                        (email) => email.facilityName === selectedFacility
+                        );
+                    
+                        filteredEmails.forEach((email) => {
+                        const listItem = document.createElement("li");
+                        listItem.textContent = `
+                            Facility: ${email.facilityName},\n
+                            Email Subject: ${email.emailSubject},\n
+                            Email Body: ${email.emailBody},\n
+                            Receiver Email: ${email.receiverEmail},
+                            Timestamp: ${email.dateOfEmail}
+                        `;
+                        emailList.appendChild(listItem);
+                        });
+                    }
+                    
+                    // Function to handle button click for generating emails
+                    function generateEmails() {
+                        const facilitySelectDropdown = document.getElementById(
+                        "facilitySelectEmails"
+                        );
+                        const selectedFacility = facilitySelectDropdown.value;
+                    
+                        // Call the function to populate the email list with the selected facility
+                        populateEmailList(selectedFacility);
+                    }
+
+                     // Function to populate the facilities dropdown for emails
+                    function populateFacilitiesDropdownForEmails() {
+                        const facilitySelectDropdown = document.getElementById(
+                        "facilitySelectEmails"
+                        );
+                    
+                        // Clear existing options
+                        facilitySelectDropdown.innerHTML = "";
+                    
+                        // Add a default option
+                        const defaultOption = document.createElement("option");
+                        defaultOption.value = "";
+                        defaultOption.textContent = "Select Facility";
+                        facilitySelectDropdown.appendChild(defaultOption);
+                    
+                        // Loop through the facilities array and add options for each facility
+                        facilities.forEach((facility) => {
+                        const option = document.createElement("option");
+                        option.value = facility.name;
+                        option.textContent = facility.name;
+                        facilitySelectDropdown.appendChild(option);
+                        });
+                    }
+
 
 
                   
@@ -1238,6 +1338,9 @@
 
                 deleteScheduleButton.addEventListener("click", deleteEmployeeSchedule);
 
+
+                generateEmailsButton.addEventListener("click", generateEmails);
+
                         // Populate the lists and dropdowns when the page loads
                 populateFacilitiesList();
                 populateStudentsList();
@@ -1249,7 +1352,8 @@
                 populateEmployeesDropdown();
                 populateVaccinationsList();
                 populateInfectionsList();
-                populateEmployeeScheduleList()
+                populateEmployeeScheduleList();
+                populateFacilitiesDropdownForEmails();
     </script>
 </body>
 </html>
