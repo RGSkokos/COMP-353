@@ -171,7 +171,7 @@ function addEmployee(
 // void their assignments for two weeks and send an email to 
 // the school principal with the subject "Warning" and the content
 // "Roger Brian, a teacher in your school, tested positive for COVID-19 on January 24, 2023."
-function newInfection(
+function CreateInfection(
     $medicareID,
     $infectionName,
     $infectionDate
@@ -239,7 +239,7 @@ function newInfection(
 }
 
 // New Vaccination
-function newVaccination(
+function CreateVaccination(
     $vaccineName,
     $medicareID,
     $numDose,
@@ -343,4 +343,6 @@ function valueExists($table, $column, $value)
     }
     return false;
 }
+
+//function 
 ?>

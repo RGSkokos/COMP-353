@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif (!isset($_POST['medicareID']) || !isset($_POST['firstName']) || !isset($_POST['lastName']) || !isset($_POST['dOB']) || !isset($_POST['MedicareExpiryDate']) || !isset($_POST['phone']) || !isset($_POST['address']) || !isset($_POST['city']) || !isset($_POST['province']) || !isset($_POST['postalCode']) || !isset($_POST['email'])) {
             echo "Please fill in all fields.";
         } else {
-            addStudent(
+            CreateStudent(
                 $_POST['medicareID'], $_POST['firstName'], $_POST['lastName'],
                 $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'],
                 $_POST['address'], $_POST['city'], $_POST['province'],
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif (!isset($_POST['medicareID']) || !isset($_POST['firstName']) || !isset($_POST['lastName']) || !isset($_POST['dOB']) || !isset($_POST['MedicareExpiryDate']) || !isset($_POST['phone']) || !isset($_POST['address']) || !isset($_POST['city']) || !isset($_POST['province']) || !isset($_POST['postalCode']) || !isset($_POST['email']) || !isset($_POST['JobTitle'])) {
             echo "Please fill in all fields.";
         } else {
-            addEmployee(
+            CreateEmployee(
                 $_POST['medicareID'], $_POST['firstName'], $_POST['lastName'],
                 $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'],
                 $_POST['address'], $_POST['city'], $_POST['province'],
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_POST['medicareID']) || !isset($_POST['infectionName']) || !isset($_POST['infectionDate'])) {
             echo "Please fill in all fields.";
         } else {
-            newInfection($_POST['medicareID'], $_POST['infectionName'], $_POST['infectionDate']);
+            CreateInfection($_POST['medicareID'], $_POST['infectionName'], $_POST['infectionDate']);
         }
     }
     //Check if the submit button was pressed for new vaccination
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_POST['medicareID']) || !isset($_POST['vaccineName']) || !isset($_POST['vaccinationDate'])) {
             echo "Please fill in all fields.";
         } else {
-            newVaccination($_POST['vaccineName'], $_POST['medicareID'], $_POST['numDose'], $_POST['vaccinationDate']);
+            CreateVaccination($_POST['vaccineName'], $_POST['medicareID'], $_POST['numDose'], $_POST['vaccinationDate']);
         }
     }
 }
