@@ -6,6 +6,32 @@
     $password = "SoenComp";
     $dbname = "ycc353_1";
 
+        // Listening for posts and checking if the submit button was pressed
+        if ($_SERVER["REQUEST_METHOD"] == "POST"){
+            // Check if the submit button was pressed for create facility
+            if(isset($_POST['SubmitCreateFacility'])) {
+                if(valueExists('Facilities', 'fID', $_POST['fID'])) { // Check if facility ID already exists in db
+                echo "Facility ID already exists.";
+                } else { // otherwise set the values from the form and call the createFacility function
+                    createFacility($_POST['fID'], $_POST['type'], $_POST['description'],
+                    $_POST['facilityName'], $_POST['address'], $_POST['city'],
+                    $_POST['province'], $_POST['postalCode'], $_POST['phoneNumber'],
+                    $_POST['webAddr'], $_POST['capacity']);
+                }
+            }
+            // Check if the submit button was pressed for add Student
+            elseif(isset($_POST['SubmitAddStudent'])) {
+                if(valueExists($_POST['medicareID'], 'medicareID', 'Students')) {
+                echo "Student already exists.";
+                } else {
+                    addStudent($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'],
+                    $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'],
+                    $_POST['address'], $_POST['city'], $_POST['province'],
+                    $_POST['postalCode'], $_POST['email'], $_POST['fID']);
+                }
+            }
+        }
+    
         // Create a new facility
         function createFacility($fID, $type, $description, $facilityName, $address,
         $city, $province, $postalCode, $phoneNumber, $webAddr,
@@ -46,45 +72,6 @@
         $conn->close();
         }
 
-    /*// Create a new Person
-            function createPeople($medicareID, $firstName, $lastName, $dOB, $MedicareExpiryDate,
-            $phone, $address, $city, $province, $postalCode, $email) {
-
-            global $servername, $username, $password, $dbname;
-            $conn = new mysqli($servername, $username, $password, $dbname);
-
-            // Check for connection errors
-            if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-            }
-
-            // Escape user inputs to prevent SQL injection
-            $medicareID = $conn->real_escape_string($medicareID);
-            $firstName = $conn->real_escape_string($firstName);
-            $lastName = $conn->real_escape_string($lastName);
-            $dOB = $conn->real_escape_string($dOB);
-            $MedicareExpiryDate = $conn->real_escape_string($MedicareExpiryDate);
-            $phone = $conn->real_escape_string($phone);
-            $address = $conn->real_escape_string($address);
-            $city = $conn->real_escape_string($city);
-            $province = $conn->real_escape_string($province);
-            $postalCode = $conn->real_escape_string($postalCode);
-            $email = $conn->real_escape_string($email);
-
-            $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
-            phone, address, city, province, postalCode, email) VALUES ('$medicareID',
-            '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
-            '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
-
-            if ($conn->query($sql) === TRUE) {
-            echo "Person added successfully.";
-            } else {
-            echo "Error adding person: " . $conn->error;
-            }
-
-            $conn->close();
-            }
-*/
         // Create a new student
         function addStudent($medicareID, $firstName, $lastName, $dOB, $MedicareExpiryDate,
         $phone, $address, $city, $province, $postalCode, $email, $fID) {
@@ -152,9 +139,9 @@
 
         // Insert into People table
         $sql = "INSERT INTO People (medicareID, firstName, lastName, dOB, MedicareExpiryDate,
-            phone, address, city, province, postalCode, email) VALUES ('$medicareID',
+            phone, address, city, province, postalCode, email, jobTitle) VALUES ('$medicareID',
             '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
-            '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
+            '$phone', '$address', '$city', '$province', '$postalCode', '$email', '$jobTitle')";
         $conn->query($sql);
 
         $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate)
@@ -210,4 +197,21 @@
         $conn->close();
         return $facilityName;
     }
+
+    // Function to determine if value already exists in table
+    function valueExists($table, $column, $value) {
+        global $servername, $username, $password, $dbname;
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        $value = $conn->real_escape_string($value);
+        $sql = "SELECT * FROM $table WHERE $column = '$value'";
+        $result = $conn->query($sql);
+        $conn->close();
+        if ($result->num_rows > 0) {
+            return true;
+        }
+        return false;
+    }
 ?>
+    // Edit and delete for facilities, students, employees.
+    // Get and POST Vaccines and Infections
