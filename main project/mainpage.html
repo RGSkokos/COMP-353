@@ -820,6 +820,25 @@
                     if (facility) {
                         const newName = prompt("Enter the new Facility Name:");
                         facility.name = newName;
+                        const newType = prompt("Enter the new Facility Type:");
+                        facility.type = newType;
+                        const newDescription = prompt("Enter the new Facility Description:");
+                        facility.description = newDescription;
+                        const newAddress = prompt("Enter the new Facility Address:");
+                        facility.address = newAddress;
+                        const newCity = prompt("Enter the new Facility City:");
+                        facility.city = newCity;
+                        const newProvince = prompt("Enter the new Facility Province:");
+                        facility.province = newProvince;
+                        const newPostalCode = prompt("Enter the new Facility Postal Code:");
+                        facility.postalCode = newPostalCode;
+                        const newPhoneNumber = prompt("Enter the new Facility Phone Number:");
+                        facility.phoneNumber = newPhoneNumber;
+                        const newWebAddr = prompt("Enter the new Facility Web Address:");
+                        facility.webAddr = newWebAddr;
+                        const newCapacity = prompt("Enter the new Facility Capacity:");
+                        facility.capacity = newCapacity;
+            
                         populateFacilitiesList();
                         populateFacilitiesDropdown(); // Update the facilities dropdown
                     } else {
@@ -835,7 +854,26 @@
                     if (student) {
                         const newFirstName = prompt("Enter the new First Name:");
                         const newLastName = prompt("Enter the new Last Name:");
-                        student.name = newFirstName + " " + newLastName;
+                        student.name = newFirstName
+                        student.lastName=newLastName;
+                        const newDOB = prompt("Enter the new Date of Birth:");
+                        student.dOB = newDOB;
+                        const newMedicareExpiryDate = prompt("Enter the new Medicare Expiry Date:");
+                        student.MedicareExpiryDate = newMedicareExpiryDate;
+                        const newPhone = prompt("Enter the new Phone Number:");
+                        student.phone = newPhone;
+                        const newAddress = prompt("Enter the new Address:");
+                        student.address = newAddress;
+                        const newCity = prompt("Enter the new City:");
+                        student.city = newCity;
+                        const newProvince = prompt("Enter the new Province:");
+                        student.province = newProvince;
+                        const newPostalCode = prompt("Enter the new Postal Code:");
+                        student.postalCode = newPostalCode;
+                        const newEmail = prompt("Enter the new Email:");
+                        student.email = newEmail;
+                        const newFacilityId = prompt("Enter the new Facility ID:");
+                        student.facilityId = newFacilityId;
                         populateStudentsList();
                         populateStudentsDropdown(); // Update the students dropdown
                     } else {
@@ -850,10 +888,26 @@
 
                     if (employee) {
                         const newFirstName = prompt("Enter the new First Name:");
-                        const newLastName = prompt("Enter the new Last Name:");
-                        const newJobTitle = prompt("Enter the new Job Title:");
                         employee.firstName = newFirstName;
+                        const newLastName = prompt("Enter the new Last Name:");
                         employee.lastName = newLastName;
+                        const newDOB = prompt("Enter the new Date of Birth:");
+                        employee.dOB = newDOB;
+                        const newMedicareExpiryDate = prompt("Enter the new Medicare Expiry Date:");
+                        employee.MedicareExpiryDate = newMedicareExpiryDate;
+                        const newPhone = prompt("Enter the new Phone Number:");
+                        employee.phone = newPhone;
+                        const newAddress = prompt("Enter the new Address:");
+                        employee.address = newAddress;
+                        const newCity = prompt("Enter the new City:");
+                        employee.city = newCity;
+                        const newProvince = prompt("Enter the new Province:");
+                        employee.province = newProvince;
+                        const newPostalCode = prompt("Enter the new Postal Code:");
+                        employee.postalCode = newPostalCode;
+                        const newEmail = prompt("Enter the new Email:");
+                        employee.email = newEmail;
+                        const newJobTitle = prompt("Enter the new Job Title:");
                         employee.jobTitle = newJobTitle;
                         populateEmployeesList();
                         populateEmployeesDropdown(); // Update the employees dropdown
