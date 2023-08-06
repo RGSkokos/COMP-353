@@ -233,7 +233,9 @@ function CreateInfection(
             $sqlSent = "INSERT INTO sent (emailID, fID, medicareID) VALUES ('$emailID', '$fID', '$medicareID')";
 
             //clear shedule for 2 weeks
-            //$sqlClearSchedule = // NOT SURE HOW TO DO THIS
+            $sqlClearSchedule = "Delete FROM schedule WHERE medicareID = '$medicareID' AND date BETWEEN '$infectionDate' AND '$infectionDate' + INTERVAL 14 DAY";
+            $conn->query($sqlClearSchedule);
+            
         }
     }
 }
