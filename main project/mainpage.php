@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_POST['medicareID'], $_POST['firstName'], $_POST['lastName'],
                 $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'],
                 $_POST['address'], $_POST['city'], $_POST['province'],
-                $_POST['postalCode'], $_POST['email'], $_POST['fID'] // fID isn't in HTML form yet
+                $_POST['postalCode'], $_POST['email'], $_POST['fID'], $_POST['occupation'] // fID isn't in HTML form yet
             );
         }
     }
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_POST['medicareID'], $_POST['firstName'], $_POST['lastName'],
                 $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'],
                 $_POST['address'], $_POST['city'], $_POST['province'],
-                $_POST['postalCode'], $_POST['email'], $_POST['fID'], $_POST['JobTitle'] // fID isn't in HTML form yet
+                $_POST['postalCode'], $_POST['email'], $_POST['fID'], $_POST['JobTitle'], $_POST['occupation'] // fID isn't in HTML form yet
             );
         }
     }
@@ -74,16 +74,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     //Check if the delete button was pressed for delete facility
     elseif (isset($_POST['deletefacilitiesButton'])) {
-        //it needs to get the fID from the form somehow
+        //get fID from the dropdown in html that connects to javascript
+        DeleteFacility($_POST['fID']);
+
     }
     //Check if the delete button was pressed for delete employee
     elseif (isset($_POST['deleteEmployeesButton'])) {
         //it needs to get the medicareID from the form somehow
-    }
-    elseif (isset($_POST['deleteStudentButton'])) {
+        DeleteEmployee($_POST['medicareID']);
+    } elseif (isset($_POST['deleteStudentButton'])) {
         //it needs to get the medicareID from the form somehow
+        DeleteStudent($_POST['medicareID']);
+    }
+    //Check if the edit button was pressed for edit facility
+    elseif (isset($_POST['editFacilityButton'])) {
+        //it needs to get the medicareID from the form somehow
+        EditFacility($_POST['fID'], $_POST['type'], $_POST['description'], $_POST['facilityName'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['phoneNumber'], $_POST['webAddr'], $_POST['capacity']);
+    }
+    //Check if the edit button was pressed for edit employee
+    elseif (isset($_POST['editEmployeeButton'])) {
+        //it needs to get the medicareID from the form somehow
+        EditEmployee($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email'], $_POST['startDate'], $_POST['endDate'], $_POST['occupation'], $_POST['facilityID'], $_POST['JobTitle']);
+    }
+    //Check if the edit button was pressed for edit student
+    elseif (isset($_POST['editStudentButton'])) {
+        //it needs to get the medicareID from the form somehow
+        EditStudent($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email'], $_POST['startDate'], $_POST['endDate'], $_POST['occupation'], $_POST['facilityID']);
+    }
+    //Check if the edit button was pressed for edit infection
+    elseif (isset($_POST['editInfectionButton'])) {
+        //it needs to get the medicareID from the form somehow
+        EditInfections($_POST['medicareID'], $_POST['infectionName'], $_POST['date']);
+    }
+    //Check if the edit button was pressed for edit vaccination
+    elseif (isset($_POST['editVaccinationButton'])) {
+        //it needs to get the medicareID from the form somehow
+        EditVaccinations($_POST['medicareID'], $_POST['vaccineName'], $_POST['numDose'], $_POST['date']);
     }
 }
 ?>
-// Edit and delete for facilities, students, employees.
-// Get and POST Vaccines and Infections

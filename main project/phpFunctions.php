@@ -62,7 +62,8 @@ function CreateStudent(
     $province,
     $postalCode,
     $email,
-    $fID //No fID in the HTML? *BUG*
+    $fID,
+    $occupation
 ) {
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -80,6 +81,7 @@ function CreateStudent(
     $province = $conn->real_escape_string($province);
     $postalCode = $conn->real_escape_string($postalCode);
     $email = $conn->real_escape_string($email);
+    $occupation = $conn->real_escape_string($occupation);
 
 
     // Get today's date
@@ -99,9 +101,9 @@ function CreateStudent(
             '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
             '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
         $conn->query($sql);
-    } // no occupation in inserting into attends, no fID in HTML either
-    $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate) 
-                VALUES ('$fID', '$medicareID', '$startDate', NULL)";
+    } // no occupation in inserting into attends table
+    $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate, occupation) 
+                VALUES ('$fID', '$medicareID', '$startDate', NULL, '$occupation')";
     $conn->query($sql);
     $conn->close();
 }
@@ -120,8 +122,8 @@ function CreateEmployee(
     $postalCode,
     $email,
     $fID,
-    //No fID in the HTML? *BUG*
-    $jobTitle
+    $jobTitle,
+    $occupation
 ) {
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -159,8 +161,8 @@ function CreateEmployee(
             '$phone', '$address', '$city', '$province', '$postalCode', '$email', '$jobTitle')";
         $conn->query($sql);
     } // no occupation in inserting into attends, no fID in HTML either
-    $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate)
-                VALUES ('$fID', '$medicareID', '$startDate', NULL)";
+    $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate, occupation)
+                VALUES ('$fID', '$medicareID', '$startDate', NULL, '$occupation')";
     $conn->query($sql);
 
     $conn->close();
@@ -235,7 +237,7 @@ function CreateInfection(
             //clear shedule for 2 weeks
             $sqlClearSchedule = "Delete FROM schedule WHERE medicareID = '$medicareID' AND date BETWEEN '$infectionDate' AND '$infectionDate' + INTERVAL 14 DAY";
             $conn->query($sqlClearSchedule);
-            
+
         }
     }
 }
@@ -347,10 +349,11 @@ function valueExists($table, $column, $value)
 }
 
 // Function to delete a facility
-function DeleteFacility($fID){
+function DeleteFacility($fID)
+{
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
-    
+
     $fID = $conn->real_escape_string($fID);
     $sql = "DELETE FROM Facilities WHERE fID = '$fID'";
     $conn->query($sql);
@@ -358,37 +361,249 @@ function DeleteFacility($fID){
 }
 
 // Function to delete an employee
-function DeleteEmployee($medicareID){
+function DeleteEmployee($medicareID)
+{
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
-    
+
     $medicareID = $conn->real_escape_string($medicareID);
     $sql = "DELETE FROM Employee WHERE medicareID = '$medicareID'";
     $conn->query($sql);
 
     // set employee end date to today in attends table
     $today = date('Y-m-d');
-    $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID'";
+    $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID' AND endDate = 'NULL'";
     $conn->query($sql);
 
     $conn->close();
 }
 
 //Function to delete a student
-function DeleteStudent($medicareID){
+function DeleteStudent($medicareID)
+{
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
-    
+
     $medicareID = $conn->real_escape_string($medicareID);
     $sql = "DELETE FROM Student WHERE medicareID = '$medicareID'";
     $conn->query($sql);
 
     // set student end date to today in attends table
     $today = date('Y-m-d');
-    $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID'";
+    $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID' AND endDate = 'NULL'";
     $conn->query($sql);
 
     $conn->close();
 }
 
+// Function to edit a facility
+function EditFacility(
+    $fID,
+    $type,
+    $description,
+    $facilityName,
+    $address,
+    $city,
+    $province,
+    $postalCode,
+    $phoneNumber,
+    $webAddr,
+    $capacity
+) {
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $fID = $conn->real_escape_string($fID);
+    $type = $conn->real_escape_string($type);
+    $description = $conn->real_escape_string($description);
+    $facilityName = $conn->real_escape_string($facilityName);
+    $address = $conn->real_escape_string($address);
+    $city = $conn->real_escape_string($city);
+    $province = $conn->real_escape_string($province);
+    $postalCode = $conn->real_escape_string($postalCode);
+    $phoneNumber = $conn->real_escape_string($phoneNumber);
+    $webAddr = $conn->real_escape_string($webAddr);
+    $capacity = $conn->real_escape_string($capacity);
+
+    $sql = "UPDATE Facilities SET type = '$type', description = '$description', facilityName = '$facilityName', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', phoneNumber = '$phoneNumber', webAddr = '$webAddr', capacity = '$capacity' WHERE fID = '$fID'";
+    $conn->query($sql);
+    $conn->close();
+}
+
+function EditEmployee(
+    $medicareID,
+    $firstName,
+    $lastName,
+    $dOB,
+    $MedicareExpiryDate,
+    $phone,
+    $address,
+    $city,
+    $province,
+    $postalCode,
+    $email,
+    $startDate,
+    $endDate,
+    $occupation,
+    $facilityID,
+    $jobTitle
+) {
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $firstName = $conn->real_escape_string($firstName);
+    $lastName = $conn->real_escape_string($lastName);
+    $dOB = $conn->real_escape_string($dOB);
+    $MedicareExpiryDate = $conn->real_escape_string($MedicareExpiryDate);
+    $phone = $conn->real_escape_string($phone);
+    $address = $conn->real_escape_string($address);
+    $city = $conn->real_escape_string($city);
+    $province = $conn->real_escape_string($province);
+    $postalCode = $conn->real_escape_string($postalCode);
+    $email = $conn->real_escape_string($email);
+    $startDate = $conn->real_escape_string($startDate);
+    $endDate = $conn->real_escape_string($endDate);
+    $occupation = $conn->real_escape_string($occupation);
+    $facilityID = $conn->real_escape_string($facilityID);
+    $jobTitle = $conn->real_escape_string($jobTitle);    
+
+    // set changed job title in employee table 
+    $sql = "UPDATE Employee SET jobTitle = '$jobTitle'";
+    $conn->query($sql);
+
+    // set changes in people table
+    $sql = "UPDATE People SET firstName = '$firstName', lastName = '$lastName', dOB = '$dOB', MedicareExpiryDate = '$MedicareExpiryDate', phone = '$phone', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', email = '$email' WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+
+    // set changes in attends table
+    $sql = "UPDATE attends SET startDate = '$startDate', endDate = '$endDate', occupation = '$occupation', facilityID = '$facilityID' WHERE medicareID = '$medicareID'";
+    // Just realized that this will change all entries in attends table with the same medicareID to the same values
+    $conn->query($sql);
+
+    $conn->close();
+}
+
+Function EditStudent(
+    $medicareID,
+    $firstName,
+    $lastName,
+    $dOB,
+    $MedicareExpiryDate,
+    $phone,
+    $address,
+    $city,
+    $province,
+    $postalCode,
+    $email,
+    $startDate,
+    $endDate,
+    $occupation,
+    $facilityID,
+    )
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $firstName = $conn->real_escape_string($firstName);
+    $lastName = $conn->real_escape_string($lastName);
+    $dOB = $conn->real_escape_string($dOB);
+    $MedicareExpiryDate = $conn->real_escape_string($MedicareExpiryDate);
+    $phone = $conn->real_escape_string($phone);
+    $address = $conn->real_escape_string($address);
+    $city = $conn->real_escape_string($city);
+    $province = $conn->real_escape_string($province);
+    $postalCode = $conn->real_escape_string($postalCode);
+    $email = $conn->real_escape_string($email);
+    $startDate = $conn->real_escape_string($startDate);
+    $endDate = $conn->real_escape_string($endDate);
+    $occupation = $conn->real_escape_string($occupation);
+    $facilityID = $conn->real_escape_string($facilityID);
+
+    // set changes in people table
+    $sql = "UPDATE People SET firstName = '$firstName', lastName = '$lastName', dOB = '$dOB', MedicareExpiryDate = '$MedicareExpiryDate', phone = '$phone', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', email = '$email' WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+
+    // set changes in attends table
+    $sql = "UPDATE attends SET startDate = '$startDate', endDate = '$endDate', occupation = '$occupation', facilityID = '$facilityID' WHERE medicareID = '$medicareID'"; 
+    // Just realized that this will change all entries with the same medicareID, so we need to change figure out another way
+    $conn->query($sql);
+
+    $conn->close();
+}
+
+//  function to edit vaccinations
+function EditVaccinations(
+    $medicareID,
+    $vaccineName,
+    $numDose,
+    $date
+) {
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $vaccineName = $conn->real_escape_string($vaccineName);
+    $numDose = $conn->real_escape_string($numDose);
+    $date = $conn->real_escape_string($date);
+
+    // set changes in people table
+    $sql = "UPDATE Vaccinations SET vaccineName = '$vaccineName', numDose = '$numDose', date = '$date' WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+    // THIS IS INCORRECT, NOT SURE WHAT IS BEING CHANGED, NEED TO REEXAMINE PRIMARY KEYS?
+
+    $conn->close();
+}
+
+//function to edit infection
+function EditInfections(
+    $medicareID,
+    $infectionName,
+    $date
+){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $infectionName = $conn->real_escape_string($infectionName);
+    $date = $conn->real_escape_string($date);
+
+    // set changes in people table
+    $sql = "UPDATE Infections SET infectionName = '$infectionName', date = '$date' WHERE medicareID = '$medicareID'";
+    $conn->query($sql);
+    // UNSURE WHAT TO DO, THIS IS CHANGING ALL ENTRIES WITH THE SAME MEDICARE ID
+
+    $conn->close();
+}
 ?>
