@@ -225,7 +225,7 @@ function CreateInfection(
             $lastName = $conn->query($sqlLastName);
             // compose email
             $to = $presidentEmail;
-            $subject = "Warning"; // no where to put subject in emailLogs so I'll just concatenate it in the body
+            $subject = "Warning";
             $txt = "$firstName $lastName, a teacher in your school, tested positive for COVID-19 on $infectionDate.";
             //add to emailLogs
             $sqlEmailLog = "INSERT INTO emailLogs (dateOfEmail, facilityName, receiverEmail, emailSubject, emailBody) VALUES ('$today', '$fID', '$presidentEmail', '$subject', '$txt')";
@@ -234,8 +234,9 @@ function CreateInfection(
             // add to sent
             $sqlSent = "INSERT INTO sent (emailID, fID, medicareID) VALUES ('$emailID', '$fID', '$medicareID')";
 
+
             //clear shedule for 2 weeks
-            $sqlClearSchedule = "Delete FROM schedule WHERE medicareID = '$medicareID' AND date BETWEEN '$infectionDate' AND '$infectionDate' + INTERVAL 14 DAY";
+            $sqlClearSchedule = "Delete FROM schedule WHERE medicareID = '$medicareID' AND date >= '$infectionDate' AND date <= '$infectionDate' + INTERVAL 14 DAY";
             $conn->query($sqlClearSchedule);
 
         }
@@ -246,7 +247,7 @@ function CreateInfection(
 function CreateVaccination(
     $vaccineName,
     $medicareID,
-    $numDose,
+    // $numDose,
     $vaccinationDate
 ) {
     global $servername, $username, $password, $dbname;
@@ -260,7 +261,7 @@ function CreateVaccination(
     // Escape user inputs to prevent SQL injection
     $vaccineName = $conn->real_escape_string($vaccineName);
     $medicareID = $conn->real_escape_string($medicareID);
-    $numDose = $conn->real_escape_string($numDose);
+    // $numDose = $conn->real_escape_string($numDose);
     $vaccinationDate = $conn->real_escape_string($vaccinationDate);
 
     // Get today's date
@@ -270,15 +271,16 @@ function CreateVaccination(
     $sqlVirus = "SELECT vID FROM Vaccines WHERE vaccineName = '$vaccineName'";
     $vID = $conn->query($sqlVirus);
 
-    // Add vaccination to table
-    /* NOT SURE IF DATE WORKS LIKE THIS */
-    // numDose here isn't like numDose in the database; here it's how many doses in one vaccination
-    // steps: count how many previous vaccinations of the same type the person has, add numDose to that number, and insert that number into database 
-    $sqlCountDoses = "SELECT COUNT(*) FROM vaccinations WHERE medicareID = '$medicareID' AND vID = '$vID'";
-    $numDosetemp = $conn->query($sqlCountDoses);
-    $numDose = $numDose + $numDosetemp;
-    $sql = "INSERT INTO vaccinations (vID, medicareID, numDose, date) VALUES (($sqlVirus), $medicareID, $numDose, '$vaccinationDate')";
+    // find count of numDose for the medicareID
+    $sqlCountDoses = "SELECT COUNT(*) FROM vaccinations WHERE medicareID = '$medicareID'";
+    $numDose = $sqlCountDoses + 1;
+    
+    //Add vaccinations to table
+    $sql = "INSERT INTO vaccinations (vID, medicareID, numDose, date) VALUES (($vID), '$medicareID', '$numDose', '$vaccinationDate')";
     $conn->query($sql);
+
+    //close connection
+    $conn->close();
 }
 
 
@@ -448,10 +450,6 @@ function EditEmployee(
     $province,
     $postalCode,
     $email,
-    $startDate,
-    $endDate,
-    $occupation,
-    $facilityID,
     $jobTitle
 ) {
     global $servername, $username, $password, $dbname;
@@ -474,10 +472,6 @@ function EditEmployee(
     $province = $conn->real_escape_string($province);
     $postalCode = $conn->real_escape_string($postalCode);
     $email = $conn->real_escape_string($email);
-    $startDate = $conn->real_escape_string($startDate);
-    $endDate = $conn->real_escape_string($endDate);
-    $occupation = $conn->real_escape_string($occupation);
-    $facilityID = $conn->real_escape_string($facilityID);
     $jobTitle = $conn->real_escape_string($jobTitle);    
 
     // set changed job title in employee table 
@@ -486,11 +480,6 @@ function EditEmployee(
 
     // set changes in people table
     $sql = "UPDATE People SET firstName = '$firstName', lastName = '$lastName', dOB = '$dOB', MedicareExpiryDate = '$MedicareExpiryDate', phone = '$phone', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', email = '$email' WHERE medicareID = '$medicareID'";
-    $conn->query($sql);
-
-    // set changes in attends table
-    $sql = "UPDATE attends SET startDate = '$startDate', endDate = '$endDate', occupation = '$occupation', facilityID = '$facilityID' WHERE medicareID = '$medicareID'";
-    // Just realized that this will change all entries in attends table with the same medicareID to the same values
     $conn->query($sql);
 
     $conn->close();
@@ -507,11 +496,7 @@ Function EditStudent(
     $city,
     $province,
     $postalCode,
-    $email,
-    $startDate,
-    $endDate,
-    $occupation,
-    $facilityID,
+    $email
     )
 {
     global $servername, $username, $password, $dbname;
@@ -534,18 +519,9 @@ Function EditStudent(
     $province = $conn->real_escape_string($province);
     $postalCode = $conn->real_escape_string($postalCode);
     $email = $conn->real_escape_string($email);
-    $startDate = $conn->real_escape_string($startDate);
-    $endDate = $conn->real_escape_string($endDate);
-    $occupation = $conn->real_escape_string($occupation);
-    $facilityID = $conn->real_escape_string($facilityID);
 
     // set changes in people table
     $sql = "UPDATE People SET firstName = '$firstName', lastName = '$lastName', dOB = '$dOB', MedicareExpiryDate = '$MedicareExpiryDate', phone = '$phone', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', email = '$email' WHERE medicareID = '$medicareID'";
-    $conn->query($sql);
-
-    // set changes in attends table
-    $sql = "UPDATE attends SET startDate = '$startDate', endDate = '$endDate', occupation = '$occupation', facilityID = '$facilityID' WHERE medicareID = '$medicareID'"; 
-    // Just realized that this will change all entries with the same medicareID, so we need to change figure out another way
     $conn->query($sql);
 
     $conn->close();
@@ -572,15 +548,17 @@ function EditVaccinations(
     $numDose = $conn->real_escape_string($numDose);
     $date = $conn->real_escape_string($date);
 
-    // set changes in people table
-    $sql = "UPDATE Vaccinations SET vaccineName = '$vaccineName', numDose = '$numDose', date = '$date' WHERE medicareID = '$medicareID'";
+    //get vID from vaccineName
+    $vID = "SELECT vID FROM Vaccines WHERE vaccineName = '$vaccineName'";
+
+    // set changes in vaccinations table with the same medicareID and numDose
+    $sql = "UPDATE vaccinations SET vID = '$vID', date = '$date' WHERE medicareID = '$medicareID' AND numDose = '$numDose'";
     $conn->query($sql);
-    // THIS IS INCORRECT, NOT SURE WHAT IS BEING CHANGED, NEED TO REEXAMINE PRIMARY KEYS?
 
     $conn->close();
 }
 
-//function to edit infection
+//function to edit infection table date
 function EditInfections(
     $medicareID,
     $infectionName,
@@ -599,10 +577,12 @@ function EditInfections(
     $infectionName = $conn->real_escape_string($infectionName);
     $date = $conn->real_escape_string($date);
 
+    //get vID from infectionName
+    $vID = "SELECT vID FROM Infections WHERE infectionName = '$infectionName'";
+
     // set changes in people table
-    $sql = "UPDATE Infections SET infectionName = '$infectionName', date = '$date' WHERE medicareID = '$medicareID'";
+    $sql = "UPDATE Infections SET date = '$date' WHERE medicareID = '$medicareID' AND vID = '$vID',";
     $conn->query($sql);
-    // UNSURE WHAT TO DO, THIS IS CHANGING ALL ENTRIES WITH THE SAME MEDICARE ID
 
     $conn->close();
 }

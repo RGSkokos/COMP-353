@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_POST['medicareID']) || !isset($_POST['vaccineName']) || !isset($_POST['vaccinationDate'])) {
             echo "Please fill in all fields.";
         } else {
-            CreateVaccination($_POST['vaccineName'], $_POST['medicareID'], $_POST['numDose'], $_POST['vaccinationDate']);
+            CreateVaccination($_POST['vaccineName'], $_POST['medicareID'], $_POST['vaccinationDate']);
         }
     }
     //Check if the delete button was pressed for delete facility
@@ -94,12 +94,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //Check if the edit button was pressed for edit employee
     elseif (isset($_POST['editEmployeeButton'])) {
         //it needs to get the medicareID from the form somehow
-        EditEmployee($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email'], $_POST['startDate'], $_POST['endDate'], $_POST['occupation'], $_POST['facilityID'], $_POST['JobTitle']);
+        EditEmployee($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email'], $_POST['JobTitle']);
     }
     //Check if the edit button was pressed for edit student
     elseif (isset($_POST['editStudentButton'])) {
         //it needs to get the medicareID from the form somehow
-        EditStudent($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email'], $_POST['startDate'], $_POST['endDate'], $_POST['occupation'], $_POST['facilityID']);
+        EditStudent($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email']);
     }
     //Check if the edit button was pressed for edit infection
     elseif (isset($_POST['editInfectionButton'])) {
