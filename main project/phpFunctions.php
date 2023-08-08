@@ -734,6 +734,193 @@ function getInfections()
     $conn->close();
     return $infections;
 }
+//Register student in attends table
+function registerStudent($fID, $medicareID, $startDate, $occupation){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: registerStudent" . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $fID = $conn->real_escape_string($fID);
+    $startDate = $conn->real_escape_string($startDate);
+    $occupation = $conn->real_escape_string($occupation);
+
+    // string to date
+    $startDate = date('YYYY-MM-DD', strtotime($startDate));
+
+    // set changes in attends table
+    $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate, occupation) VALUES ('$medicareID', '$fID', '$startDate', NULL, '$occupation')";
+    if ($conn->query($sql) === TRUE) {
+        echo "Student registered successfully";
+      } else {
+        echo "Error registering student: " . $conn->error;
+      }
+
+    $conn->close();
+}
+
+//function to modify student registration
+function modifyStudentRegistration($fID, $medicareID, $startDate, $endDate, $occupation){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: modifyStudentRegistration" . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $fID = $conn->real_escape_string($fID);
+    $startDate = $conn->real_escape_string($startDate);
+    $endDate = $conn->real_escape_string($endDate);
+    $occupation = $conn->real_escape_string($occupation);
+
+    // string to date
+    $startDate = date('YYYY-MM-DD', strtotime($startDate));
+    $endDate = date('YYYY-MM-DD', strtotime($endDate));
+
+    // set changes in attends table
+    $sql = "UPDATE attends SET endDate = '$endDate', occupation = '$occupation' WHERE medicareID = '$medicareID' AND fID = '$fID' AND startDate = '$startDate'";
+    if ($conn->query($sql) === TRUE) {
+        echo "Student registration modified successfully";
+      } else {
+        echo "Error modifying student registration" . $conn->error;
+      }
+
+    $conn->close();
+  }
+
+  //function to cancel student registration
+function cancelStudentRegistration($fID, $medicareID, $startDate, $endDate, $occupation){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: cancelStudentRegistration" . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $fID = $conn->real_escape_string($fID);
+    $startDate = $conn->real_escape_string($startDate);
+    $endDate = $conn->real_escape_string($endDate);
+    $occupation = $conn->real_escape_string($occupation);
+
+    // string to date
+    $startDate = date('YYYY-MM-DD', strtotime($startDate));
+    $endDate = date('YYYY-MM-DD', strtotime($endDate));
+
+    // set changes in attends table
+    $sql = "DELETE FROM attends WHERE medicareID = '$medicareID' AND fID = '$fID' AND startDate = '$startDate'";
+    if ($conn->query($sql) === TRUE) {
+        echo "Student registration cancelled successfully";
+      } else {
+        echo "Error cancelling student registration" . $conn->error;
+      }
+
+    $conn->close();
+  }
+  
+//Function to assign schedule for an employee
+function assignEmployeeSchedule($fID, $medicareID, $date, $startTime, $endTime){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: assignEmployeeSchedule" . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $fID = $conn->real_escape_string($fID);
+    $date = $conn->real_escape_string($date);
+    $startTime = $conn->real_escape_string($startTime);
+    $endTime = $conn->real_escape_string($endTime);
+
+    // string to date
+    $date = date('YYYY-MM-DD', strtotime($date));
+    $startTime = date('HH:MM:SS', strtotime($startTime));
+    $endTime = date('HH:MM:SS', strtotime($endTime));
+
+    // set changes into schedule table
+    $sql = "INSERT INTO schedule (fID, medicareID, date, startTime, endTime) VALUES ('$fID', '$medicareID', '$date', '$startTime', '$endTime')";
+    if ($conn->query($sql) === TRUE) {
+        echo "Employee schedule assigned successfully";
+      } else {
+        echo "Error assigning employee schedule" . $conn->error;
+      }
+
+    $conn->close();
+    }
+//Function to Delete schedule for an employee
+function deleteEmployeeSchedule($fID, $medicareID, $date){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: deleteEmployeeSchedule" . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $fID = $conn->real_escape_string($fID);
+    $date = $conn->real_escape_string($date);
+
+    // string to date
+    $date = date('YYYY-MM-DD', strtotime($date));
+
+    // set changes into schedule table
+    $sql = "DELETE FROM schedule WHERE fID = '$fID' AND medicareID = '$medicareID' AND date = '$date'";
+    if ($conn->query($sql) === TRUE) {
+        echo "Employee schedule deleted successfully";
+      } else {
+        echo "Error deleting employee schedule" . $conn->error;
+      }
+
+    $conn->close();
+    }
+
+    //function to edit schedule for an Employee
+function editEmployeeSchedule($fID, $medicareID, $date, $startTime, $endTime){
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // Check for connection errors
+    if ($conn->connect_error) {
+        die("Connection failed: editEmployeeSchedule" . $conn->connect_error);
+    }
+
+    // Escape user inputs to prevent SQL injection
+    $medicareID = $conn->real_escape_string($medicareID);
+    $fID = $conn->real_escape_string($fID);
+    $date = $conn->real_escape_string($date);
+    $startTime = $conn->real_escape_string($startTime);
+    $endTime = $conn->real_escape_string($endTime);
+
+    // string to date
+    $date = date('YYYY-MM-DD', strtotime($date));
+    $startTime = date('HH:MM:SS', strtotime($startTime));
+    $endTime = date('HH:MM:SS', strtotime($endTime));
+
+    // set changes into schedule table
+    $sql = "UPDATE schedule SET startTime = '$startTime', endTime = '$endTime' WHERE fID = '$fID' AND medicareID = '$medicareID' AND date = '$date'";
+    if ($conn->query($sql) === TRUE) {
+        echo "Employee schedule edited successfully";
+      } else {
+        echo "Error editing employee schedule" . $conn->error;
+      }
+
+    $conn->close();
+    }
 
 // Get facility name by ID
 function getFacilityName($fID)
