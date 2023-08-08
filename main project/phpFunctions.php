@@ -18,7 +18,7 @@ function CreateFacility(
 
     // Check for connection errors
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: CreateFacility" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -280,8 +280,12 @@ function CreateInfection(
 
 
             //clear shedule for 2 weeks
-            $sqlClearSchedule = "Delete FROM schedule WHERE medicareID = '$medicareID' AND date >= '$infectionDate' AND date <= '$infectionDate' + INTERVAL 14 DAY";
-            $conn->query($sqlClearSchedule);
+            $sql = "DELETE FROM schedule WHERE medicareID = '$medicareID' AND date >= '$infectionDate' AND date <= '$infectionDate' + INTERVAL 14 DAY";
+            if ($conn->query($sql) === TRUE) {
+                echo "Schedule cleared successfully";
+              } else {
+                echo "Error: Schedule clear failed" . $sql . "<br>" . $conn->error;
+              }
 
         }
     }
@@ -334,73 +338,6 @@ function CreateVaccination(
     $conn->close();
 }
 
-
-// Get facilities
-function getFacilities()
-{
-    global $servername, $username, $password, $dbname;
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    $facilities = array();
-    $sql = "SELECT * FROM Facilities";
-    $result = $conn->query($sql);
-    while ($row = $result->fetch_assoc()) {
-        $facilities[] = $row;
-    }
-    $conn->close();
-    return $facilities;
-}
-
-// Get students
-function getStudents()
-{
-    global $servername, $username, $password, $dbname;
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    $students = array();
-    $sql = "SELECT p.firstName as First Name, p.lastName as Last Name
-        FROM People p, Students s WHERE p.medicareID = s.medicareID";
-    $result = $conn->query($sql);
-    while ($row = $result->fetch_assoc()) {
-        $students[] = $row;
-    }
-    $conn->close();
-    return $students;
-}
-
-// Get facility name by ID
-function getFacilityName($fID)
-{
-    global $servername, $username, $password, $dbname;
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    $fID = $conn->real_escape_string($fID);
-    $sql = "SELECT facilityName FROM Facilities WHERE id = '$fID'";
-    $result = $conn->query($sql);
-    $facilityName = "";
-    if ($row = $result->fetch_assoc()) {
-        $facilityName = $row['facilityName'];
-    }
-    $conn->close();
-    return $facilityName;
-}
-
-// Function to determine if value already exists in table
-function valueExists($table, $column, $value)
-{
-    global $servername, $username, $password, $dbname;
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    $value = $conn->real_escape_string($value);
-    $sql = "SELECT * FROM $table WHERE $column = '$value'";
-    $result = $conn->query($sql);
-    $conn->close();
-    if ($result->num_rows > 0) {
-        return true;
-    }
-    return false;
-}
-
 // Function to delete a facility
 function DeleteFacility($fID)
 {
@@ -409,7 +346,11 @@ function DeleteFacility($fID)
 
     $fID = $conn->real_escape_string($fID);
     $sql = "DELETE FROM Facilities WHERE fID = '$fID'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Facility deleted successfully";
+      } else {
+        echo "Error deleting facility" . $conn->error;
+      }
     $conn->close();
 }
 
@@ -420,8 +361,6 @@ function DeleteEmployee($medicareID)
     $conn = new mysqli($servername, $username, $password, $dbname);
 
     $medicareID = $conn->real_escape_string($medicareID);
-    $sql = "DELETE FROM Employee WHERE medicareID = '$medicareID'";
-    $conn->query($sql);
 
     // set employee end date to today in attends table
     $today = date('YYYY-MM-DD');
@@ -441,10 +380,6 @@ function DeleteStudent($medicareID)
     global $servername, $username, $password, $dbname;
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    $medicareID = $conn->real_escape_string($medicareID);
-    $sql = "DELETE FROM Student WHERE medicareID = '$medicareID'";
-    $conn->query($sql);
-
     // set student end date to today in attends table
     $today = date('YYYY-MM-DD');
     $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID' AND endDate = 'NULL'";
@@ -455,6 +390,46 @@ function DeleteStudent($medicareID)
       }
 
     $conn->close();
+}
+//Function to delete infections
+function DeleteInfection($virusName, $medicareID, $infectionDate)
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    //get vID from Viruses
+    $sql = "SELECT vID FROM Viruses WHERE type = '$virusName'";
+    $vID = $conn->query($sql);
+
+    $sql = "DELETE FROM Infections WHERE vID = '$vID' AND medicareID = '$medicareID' AND infectionDate = '$infectionDate'";
+    if ($conn->query($sql) === TRUE) {
+        echo "infections updated successfully";
+      } else {
+        echo "Error updating record: infections" . $conn->error;
+      }
+
+    $conn->close();
+}
+
+function DeleteVaccination($virusName, $medicareID, $numDose)
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    if ($conn->connect_error) {
+        die("Connection failed: DeleteVaccination" . $conn->connect_error);
+    }
+
+    //get vID from Vaccines table
+    $sql = "SELECT vID FROM Vaccines WHERE virusName = '$virusName'";
+    $vID = $conn->query($sql);
+    //Delete vaccination from Vaccinations table where vID, medicareID, and numDose
+    $sql = "DELETE FROM Vaccinations WHERE vID = '$vID' AND medicareID = '$medicareID'";    
+    if ($conn->query($sql) === TRUE) {
+        echo "Vaccination deleted successfully";
+      } else {
+        echo "Error deleting record: Vaccinations" . $conn->error;
+      }
 }
 
 // Function to edit a facility
@@ -682,5 +657,114 @@ function EditInfections(
       }
 
     $conn->close();
+}
+// Get facilities
+function getFacilities()
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    $facilities = array();
+    $sql = "SELECT * FROM Facilities";
+    $result = $conn->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        $facilities[] = $row;
+    }
+    $conn->close();
+    return $facilities;
+}
+
+// Get students
+function getStudents()
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    $students = array();
+    $sql = "SELECT p.firstName as First Name, p.lastName as Last Name
+        FROM People p, Students s WHERE p.medicareID = s.medicareID";
+    $result = $conn->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        $students[] = $row;
+    }
+    $conn->close();
+    return $students;
+}
+// get employees
+function getEmployees()
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    $employees = array();
+    $sql = "SELECT p.firstName as First Name, p.lastName as Last Name
+        FROM People p, Employees e WHERE p.medicareID = e.medicareID";
+    $result = $conn->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        $employees[] = $row;
+    }
+    $conn->close();
+    return $employees;
+}
+
+function getVaccinations()
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    $vaccines = array();
+    $sql = "SELECT * FROM vaccinations";
+    $result = $conn->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        $vaccines[] = $row;
+    }
+    $conn->close();
+    return $vaccines;
+}
+
+function getInfections()
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    $infections = array();
+    $sql = "SELECT * FROM infections";
+    $result = $conn->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        $infections[] = $row;
+    }
+    $conn->close();
+    return $infections;
+}
+
+// Get facility name by ID
+function getFacilityName($fID)
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    $fID = $conn->real_escape_string($fID);
+    $sql = "SELECT facilityName FROM Facilities WHERE id = '$fID'";
+    $result = $conn->query($sql);
+    $facilityName = "";
+    if ($row = $result->fetch_assoc()) {
+        $facilityName = $row['facilityName'];
+    }
+    $conn->close();
+    return $facilityName;
+}
+
+// Function to determine if value already exists in table
+function valueExists($table, $column, $value)
+{
+    global $servername, $username, $password, $dbname;
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    $value = $conn->real_escape_string($value);
+    $sql = "SELECT * FROM $table WHERE $column = '$value'";
+    $result = $conn->query($sql);
+    $conn->close();
+    if ($result->num_rows > 0) {
+        return true;
+    }
+    return false;
 }
 ?>
