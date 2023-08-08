@@ -85,6 +85,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (isset($_POST['deleteStudentButton'])) {
         //it needs to get the medicareID from the form somehow
         DeleteStudent($_POST['medicareID']);
+    } elseif (isset($_POST['deleteInfectionButton'])) {
+        //it needs to get the medicareID from the form somehow
+        DeleteInfection($_POST['virusName'], $_POST['medicareID'], $_POST['infectionName']);
+    } elseif (isset($_POST['deleteVaccinationButton'])) {
+        //it needs to get the medicareID from the form somehow
+        DeleteVaccination($_POST['virusName'], $_POST['medicareID'], $_POST['numDose']);
     }
     //Check if the edit button was pressed for edit facility
     elseif (isset($_POST['editFacilityButton'])) {
@@ -111,5 +117,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //it needs to get the medicareID from the form somehow
         EditVaccinations($_POST['medicareID'], $_POST['vaccineName'], $_POST['numDose'], $_POST['date']);
     }
+    //get all the facilities
+    elseif (isset($_POST['getFacilitiesButton'])) {
+        $FacilitiesArray = GetFacilities();
+    }
+    //get all the employees
+    elseif (isset($_POST['getEmployeesButton'])) {
+        $EmployeesArray = GetEmployees();
+    }
+    //get all the students
+    elseif (isset($_POST['getStudentsButton'])) {
+        $StudentsArray = GetStudents();
+    }
+    //get all the infections
+    elseif (isset($_POST['getInfectionsButton'])) {
+        $InfectionsArray = GetInfections();
+    }
+    //get all the vaccinations
+    elseif (isset($_POST['getVaccinationsButton'])) {
+        $VaccinationsArray = GetVaccinations();
+    }
+    
 }
 ?>
