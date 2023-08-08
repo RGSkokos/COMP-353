@@ -75,47 +75,86 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //Check if the delete button was pressed for delete facility
     elseif (isset($_POST['deletefacilitiesButton'])) {
         //get fID from the dropdown in html that connects to javascript
-        DeleteFacility($_POST['fID']);
-
+        try {
+            DeleteFacility($_POST['fID']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     //Check if the delete button was pressed for delete employee
     elseif (isset($_POST['deleteEmployeesButton'])) {
         //it needs to get the medicareID from the form somehow
-        DeleteEmployee($_POST['medicareID']);
+        try {
+            DeleteEmployee($_POST['medicareID']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     } elseif (isset($_POST['deleteStudentButton'])) {
         //it needs to get the medicareID from the form somehow
-        DeleteStudent($_POST['medicareID']);
+        try {
+            DeleteStudent($_POST['medicareID']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     } elseif (isset($_POST['deleteInfectionButton'])) {
         //it needs to get the medicareID from the form somehow
-        DeleteInfection($_POST['virusName'], $_POST['medicareID'], $_POST['infectionName']);
+        try {
+            DeleteInfection($_POST['virusName'], $_POST['medicareID'], $_POST['infectionName']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     } elseif (isset($_POST['deleteVaccinationButton'])) {
         //it needs to get the medicareID from the form somehow
-        DeleteVaccination($_POST['virusName'], $_POST['medicareID'], $_POST['numDose']);
+        try {
+            DeleteVaccination($_POST['virusName'], $_POST['medicareID'], $_POST['numDose']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     //Check if the edit button was pressed for edit facility
     elseif (isset($_POST['editFacilityButton'])) {
         //it needs to get the medicareID from the form somehow
+        try{
         EditFacility($_POST['fID'], $_POST['type'], $_POST['description'], $_POST['facilityName'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['phoneNumber'], $_POST['webAddr'], $_POST['capacity']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     //Check if the edit button was pressed for edit employee
     elseif (isset($_POST['editEmployeeButton'])) {
         //it needs to get the medicareID from the form somehow
-        EditEmployee($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email'], $_POST['JobTitle']);
+        try{
+            EditEmployee($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email'], $_POST['JobTitle']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     //Check if the edit button was pressed for edit student
     elseif (isset($_POST['editStudentButton'])) {
         //it needs to get the medicareID from the form somehow
-        EditStudent($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email']);
+        try{
+            EditStudent($_POST['medicareID'], $_POST['firstName'], $_POST['lastName'], $_POST['dOB'], $_POST['MedicareExpiryDate'], $_POST['phone'], $_POST['address'], $_POST['city'], $_POST['province'], $_POST['postalCode'], $_POST['email']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     //Check if the edit button was pressed for edit infection
     elseif (isset($_POST['editInfectionButton'])) {
         //it needs to get the medicareID from the form somehow
+        try{
         EditInfections($_POST['medicareID'], $_POST['infectionName'], $_POST['date']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     //Check if the edit button was pressed for edit vaccination
     elseif (isset($_POST['editVaccinationButton'])) {
         //it needs to get the medicareID from the form somehow
-        EditVaccinations($_POST['medicareID'], $_POST['vaccineName'], $_POST['numDose'], $_POST['date']);
+        try{
+            EditVaccinations($_POST['medicareID'], $_POST['vaccineName'], $_POST['numDose'], $_POST['date']);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
     //get all the facilities
     elseif (isset($_POST['getFacilitiesButton'])) {
@@ -137,6 +176,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     elseif (isset($_POST['getVaccinationsButton'])) {
         $VaccinationsArray = GetVaccinations();
     }
-    
+
 }
 ?>
