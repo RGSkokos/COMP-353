@@ -41,9 +41,9 @@ function CreateFacility(
         '$capacity')";
 
     if ($conn->query($sql) === TRUE) {
-        echo "Facility added successfully.";
+        echo " Inserted into facilities successfully";
     } else {
-        echo "Error adding facility: " . $conn->error;
+        echo "Error: Insert into facilities failed" . $sql . "<br>" . $conn->error;
     }
 
     $conn->close();
@@ -85,14 +85,21 @@ function CreateStudent(
 
 
     // Get today's date
-    $startDate = date('Y-m-d');
+    $startDate = date('YYYY-MM-DD');
+    // string to date
+    $MedicareExpiryDate = date('YYYY-MM-DD', strtotime($MedicareExpiryDate));
+
     // check if student is already in people table
-    $sql = "SELECT * FROM People WHERE medicareID = '$medicareID'";
+    $sql = "SELECT count(*) FROM People WHERE medicareID = '$medicareID'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         echo "Student already exists in People table. Adding to Student table only";
         $sql = "INSERT INTO Students (medicareID) VALUES ('$medicareID')";
-        $conn->query($sql);
+        if ($conn->query($sql) === TRUE) {
+            echo "Inserted into students successfully";
+          } else {
+            echo "Error: Insert into students failed " . $sql . "<br>" . $conn->error;
+          };
     } else {
 
         // Insert into People table
@@ -100,11 +107,19 @@ function CreateStudent(
             phone, address, city, province, postalCode, email) VALUES ('$medicareID',
             '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
             '$phone', '$address', '$city', '$province', '$postalCode', '$email')";
-        $conn->query($sql);
+        if ($conn->query($sql) === TRUE) {
+            echo "Inserted into people table successfully";
+          } else {
+            echo "Error: Insert into people table failed" . $sql . "<br>" . $conn->error;
+          };
     } // no occupation in inserting into attends table
     $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate, occupation) 
                 VALUES ('$fID', '$medicareID', '$startDate', NULL, '$occupation')";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Inserted into attends successfully";
+      } else {
+        echo "Error: Insert into attends failed" . $sql . "<br>" . $conn->error;
+      };
     $conn->close();
 }
 
@@ -143,15 +158,21 @@ function CreateEmployee(
     $jobTitle = $conn->real_escape_string($jobTitle);
 
     // Get today's date
-    $startDate = date('Y-m-d');
+    $startDate = date('YYYY-MM-DD');
+    //string to date
+    $MedicareExpiryDate = date('YYYY-MM-DD', strtotime($MedicareExpiryDate));
 
     //check if employee is already in people table
-    $sql = "SELECT * FROM People WHERE medicareID = '$medicareID'";
+    $sql = "SELECT count(*) FROM People WHERE medicareID = '$medicareID'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         echo "Employee already exists in People table. Adding to Employee table only.";
         $sql = "INSERT INTO Employee (medicareID, jobTitle) VALUES ('$medicareID', '$jobTitle')";
-        $conn->query($sql);
+        if ($conn->query($sql) === TRUE) {
+            echo "Inserted into employee table successfully";
+          } else {
+            echo "Error: Insert into employee table failed " . $sql . "<br>" . $conn->error;
+          };
     } else {
         echo "Employee does not exist in People table. Adding to People and Employee tables.";
         // Insert into People table
@@ -159,11 +180,19 @@ function CreateEmployee(
             phone, address, city, province, postalCode, email, jobTitle) VALUES ('$medicareID',
             '$firstName', '$lastName', '$dOB', '$MedicareExpiryDate',
             '$phone', '$address', '$city', '$province', '$postalCode', '$email', '$jobTitle')";
-        $conn->query($sql);
+        if ($conn->query($sql) === TRUE) {
+            echo "Inserted into people successfully";
+          } else {
+            echo "Error: Insert into people failed" . $sql . "<br>" . $conn->error;
+          };
     } // no occupation in inserting into attends, no fID in HTML either
     $sql = "INSERT INTO attends (fID, medicareID, startDate, endDate, occupation)
                 VALUES ('$fID', '$medicareID', '$startDate', NULL, '$occupation')";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Inserted into attends successfully";
+      } else {
+        echo "Error: Insert into attends failed" . $sql . "<br>" . $conn->error;
+      };
 
     $conn->close();
 }
@@ -183,7 +212,7 @@ function CreateInfection(
 
     // Check for connection error
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: CreateInfection" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -192,16 +221,22 @@ function CreateInfection(
     $infectionDate = $conn->real_escape_string($infectionDate);
 
     // Get today's date
-    $today = date('Y-m-d');
+    $today = date('YYYY-MM-DD');
+    // string to date
+    $infectionDate = date('YYYY-MM-DD', strtotime($infectionDate));
 
     // Select virus name
     $sqlVirus = "SELECT vID FROM Viruses WHERE type = '$infectionName'";
     $vID = $conn->query($sqlVirus);
 
     // Add infection to table
-    /* NOT SURE IF DATE WORKS LIKE THIS */
+    $infectionDate = date('YYYY-MM-DD', strtotime($infectionDate));
     $sql = "INSERT INTO infections (vID, medicareID, date) VALUES (($vID), '$medicareID', '$infectionDate')";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Inserted into Infection successfully";
+      } else {
+        echo "Error: Insert into Infection failed " . $sql . "<br>" . $conn->error;
+      };
 
     //Check if COVID-19
     if ($infectionName == "COVID-19") {
@@ -209,7 +244,7 @@ function CreateInfection(
         $sqlJobCheck = "SELECT jobTitle FROM Employee WHERE medicareID = '$medicareID'";
         $jobTitle = $conn->query($sqlJobCheck);
         // if $jobTitle contains substring "Teacher"
-        if (strpos($jobTitle, "Teacher") !== false) {
+        if (strpos($jobTitle, "Teacher") !== false) { //!== false from https://www.php.net/manual/en/function.strpos.php
             // find fID of teacher and president with the same fID
             $sqlFID = "SELECT fID FROM attends WHERE medicareID = '$medicareID'";
             $fID = $conn->query($sqlFID);
@@ -224,15 +259,24 @@ function CreateInfection(
             $sqlLastName = "SELECT lastName FROM People WHERE medicareID = '$medicareID'";
             $lastName = $conn->query($sqlLastName);
             // compose email
-            $to = $presidentEmail;
             $subject = "Warning";
             $txt = "$firstName $lastName, a teacher in your school, tested positive for COVID-19 on $infectionDate.";
             //add to emailLogs
             $sqlEmailLog = "INSERT INTO emailLogs (dateOfEmail, facilityName, receiverEmail, emailSubject, emailBody) VALUES ('$today', '$fID', '$presidentEmail', '$subject', '$txt')";
+            if ($conn->query($sqlEmailLog) === TRUE) {
+                echo "Inserted into emailLogs successfully";
+              } else {
+                echo "Error: Insert into emailLogs failed" . $sql . "<br>" . $conn->error;
+              };
             // get the autoincremented id from the insert
             $emailID = $conn->insert_id;
             // add to sent
             $sqlSent = "INSERT INTO sent (emailID, fID, medicareID) VALUES ('$emailID', '$fID', '$medicareID')";
+            if ($conn->query($sqlSent) === TRUE) {
+                echo "Inserted into sent successfully";
+              } else {
+                echo "Error: Insert into sent failed" . $sql . "<br>" . $conn->error;
+              }
 
 
             //clear shedule for 2 weeks
@@ -255,7 +299,7 @@ function CreateVaccination(
 
     // Check for connection error
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: CreateVaccination" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -265,7 +309,9 @@ function CreateVaccination(
     $vaccinationDate = $conn->real_escape_string($vaccinationDate);
 
     // Get today's date
-    $today = date('Y-m-d');
+    $today = date('YYYY-MM-DD');
+    //to str to date
+    $vaccinationDate = date('YYYY-MM-DD', strtotime($vaccinationDate));
 
     // Select virus name
     $sqlVirus = "SELECT vID FROM Vaccines WHERE vaccineName = '$vaccineName'";
@@ -273,11 +319,16 @@ function CreateVaccination(
 
     // find count of numDose for the medicareID
     $sqlCountDoses = "SELECT COUNT(*) FROM vaccinations WHERE medicareID = '$medicareID'";
+    $numDose = $conn->query($sqlCountDoses);
     $numDose = $sqlCountDoses + 1;
     
     //Add vaccinations to table
     $sql = "INSERT INTO vaccinations (vID, medicareID, numDose, date) VALUES (($vID), '$medicareID', '$numDose', '$vaccinationDate')";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Inserted into Vaccinations successfully";
+      } else {
+        echo "Error: Insert into Vaccinations failed" . $sql . "<br>" . $conn->error;
+      };
 
     //close connection
     $conn->close();
@@ -373,9 +424,13 @@ function DeleteEmployee($medicareID)
     $conn->query($sql);
 
     // set employee end date to today in attends table
-    $today = date('Y-m-d');
+    $today = date('YYYY-MM-DD');
     $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID' AND endDate = 'NULL'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "attends updated successfully";
+      } else {
+        echo "Error updating record: attends " . $conn->error;
+      }
 
     $conn->close();
 }
@@ -391,9 +446,13 @@ function DeleteStudent($medicareID)
     $conn->query($sql);
 
     // set student end date to today in attends table
-    $today = date('Y-m-d');
+    $today = date('YYYY-MM-DD');
     $sql = "UPDATE attends SET endDate = '$today' WHERE medicareID = '$medicareID' AND endDate = 'NULL'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "attends updated successfully";
+      } else {
+        echo "Error updating record: attends" . $conn->error;
+      }
 
     $conn->close();
 }
@@ -417,7 +476,7 @@ function EditFacility(
 
     // Check for connection errors
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: EditFacility" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -434,7 +493,11 @@ function EditFacility(
     $capacity = $conn->real_escape_string($capacity);
 
     $sql = "UPDATE Facilities SET type = '$type', description = '$description', facilityName = '$facilityName', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', phoneNumber = '$phoneNumber', webAddr = '$webAddr', capacity = '$capacity' WHERE fID = '$fID'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Facilities updated successfully";
+      } else {
+        echo "Error updating record: Facilities" . $conn->error;
+      }
     $conn->close();
 }
 
@@ -457,7 +520,7 @@ function EditEmployee(
 
     // Check for connection errors
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: EditEmployee" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -474,13 +537,25 @@ function EditEmployee(
     $email = $conn->real_escape_string($email);
     $jobTitle = $conn->real_escape_string($jobTitle);    
 
+    // string to date
+    $dOB = date('YYYY-MM-DD', strtotime($dOB));
+    $MedicareExpiryDate = date('YYYY-MM-DD', strtotime($MedicareExpiryDate));
+    
     // set changed job title in employee table 
     $sql = "UPDATE Employee SET jobTitle = '$jobTitle'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Employee updated successfully";
+      } else {
+        echo "Error updating record: Employee" . $conn->error;
+      }
 
     // set changes in people table
     $sql = "UPDATE People SET firstName = '$firstName', lastName = '$lastName', dOB = '$dOB', MedicareExpiryDate = '$MedicareExpiryDate', phone = '$phone', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', email = '$email' WHERE medicareID = '$medicareID'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "People updated successfully";
+      } else {
+        echo "Error updating record: People" . $conn->error;
+      }
 
     $conn->close();
 }
@@ -504,7 +579,7 @@ Function EditStudent(
 
     // Check for connection errors
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: EditStudent" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -520,9 +595,17 @@ Function EditStudent(
     $postalCode = $conn->real_escape_string($postalCode);
     $email = $conn->real_escape_string($email);
 
+    // string to date
+    $dOB = date('YYYY-MM-DD', strtotime($dOB));
+    $MedicareExpiryDate = date('YYYY-MM-DD', strtotime($MedicareExpiryDate));
+
     // set changes in people table
     $sql = "UPDATE People SET firstName = '$firstName', lastName = '$lastName', dOB = '$dOB', MedicareExpiryDate = '$MedicareExpiryDate', phone = '$phone', address = '$address', city = '$city', province = '$province', postalCode = '$postalCode', email = '$email' WHERE medicareID = '$medicareID'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "People updated successfully";
+      } else {
+        echo "Error updating record: People" . $conn->error;
+      }
 
     $conn->close();
 }
@@ -539,7 +622,7 @@ function EditVaccinations(
 
     // Check for connection errors
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: EditVaccinations" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -548,12 +631,19 @@ function EditVaccinations(
     $numDose = $conn->real_escape_string($numDose);
     $date = $conn->real_escape_string($date);
 
+    // string to date
+    $date = date('YYYY-MM-DD', strtotime($date));
+
     //get vID from vaccineName
     $vID = "SELECT vID FROM Vaccines WHERE vaccineName = '$vaccineName'";
 
     // set changes in vaccinations table with the same medicareID and numDose
     $sql = "UPDATE vaccinations SET vID = '$vID', date = '$date' WHERE medicareID = '$medicareID' AND numDose = '$numDose'";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Vaccinations updated successfully";
+      } else {
+        echo "Error updating record: Vaccinations" . $conn->error;
+      }
 
     $conn->close();
 }
@@ -569,7 +659,7 @@ function EditInfections(
 
     // Check for connection errors
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: EditInfections" . $conn->connect_error);
     }
 
     // Escape user inputs to prevent SQL injection
@@ -577,12 +667,19 @@ function EditInfections(
     $infectionName = $conn->real_escape_string($infectionName);
     $date = $conn->real_escape_string($date);
 
+    // string to date
+    $date = date('YYYY-MM-DD', strtotime($date));
+
     //get vID from infectionName
     $vID = "SELECT vID FROM Infections WHERE infectionName = '$infectionName'";
 
     // set changes in people table
     $sql = "UPDATE Infections SET date = '$date' WHERE medicareID = '$medicareID' AND vID = '$vID',";
-    $conn->query($sql);
+    if ($conn->query($sql) === TRUE) {
+        echo "Infections updated successfully";
+      } else {
+        echo "Error updating record: Infections" . $conn->error;
+      }
 
     $conn->close();
 }
