@@ -1,0 +1,136 @@
+    /* CSS for the 3x3 grid layout */
+#createFormFacility {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+}
+
+/* Adjust the width of the labels to align them properly */
+#createFormFacility label {
+    grid-column: 1 / 4; /* Labels span three columns */
+    width: 100%;
+    max-width: 100px;
+    text-align: right;
+}
+
+/* Adjust the size of the input boxes */
+#createFormFacility input[type="text"] {
+    grid-column: 4 / 11; /* Input boxes span seven columns */
+    width: 100%;
+    max-width: 200px;
+}
+
+/* Adjust the position of the button */
+#createFormFacility button {
+    grid-column: 1 / 3; /* Button spans all ten columns */
+}
+
+/* Adjust the description input width */
+#description {
+    grid-column: 4 / 10; /* Description input spans six columns */
+    width: 100%;
+    max-width: 400px; /* Increase the max-width to accommodate the example placeholder */
+
+    
+}
+/* CSS for the 3x3 grid layout */
+#addFormStudent {
+display: grid;
+grid-template-columns: repeat(10, 1fr);
+gap: 5px;
+}
+
+/* Adjust the width of the labels to align them properly */
+#addFormStudent label {
+grid-column: 1 / 4; /* Labels span three columns */
+width: 100%;
+max-width: 100px;
+text-align: right;
+}
+
+/* Adjust the size of the input boxes */
+#addFormStudent input[type="text"],
+#addFormStudent input[type="date"],
+#addFormStudent input[type="email"],
+#addFormStudent select {
+grid-column: 4 / 11; /* Input boxes span seven columns */
+width: 100%;
+max-width: 200px;
+}
+
+/* Adjust the position of the button */
+#addFormStudent button {
+grid-column: 1 / 3; /* Button spans all ten columns */
+}
+
+/* Adjust the jobTitleContainer input width */
+#jobTitleContainer {
+grid-column: 4 / 10; /* jobTitleContainer input spans six columns */
+width: 100%;
+max-width: 400px; /* Increase the max-width to accommodate the example placeholder */
+}
+/* CSS for the 3x3 grid layout */
+#addFormEmployee {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+}
+
+/* Adjust the width of the labels to align them properly */
+#addFormEmployee label {
+    grid-column: 1 / 4; /* Labels span three columns */
+    width: 100%;
+    max-width: 100px;
+    text-align: right;
+}
+
+/* Adjust the size of the input boxes */
+#addFormEmployee input[type="text"],
+#addFormEmployee input[type="date"],
+#addFormEmployee input[type="email"],
+#addFormEmployee input[type="jobTitle"],
+#addFormEmployee select {
+    grid-column: 4 / 11; /* Input boxes span seven columns */
+    width: 100%;
+    max-width: 200px;
+}
+
+/* Adjust the position of the button */
+#addFormEmployee button {
+    grid-column: 1 / 3; /* Button spans all ten columns */
+}
+    
+
+/* Additional CSS for the list containers on the RHS */
+.formWithListContainer {
+display: flex;
+flex-wrap: wrap; /* Allow items to wrap to the next line if there's not enough space */
+gap: 20px;
+margin-bottom: 30px;
+}
+
+.listContainer {
+flex-basis: calc(50% - 20px); /* Set a width for the list containers (half the available space minus the gap) */
+max-height: 300px; /* Set a maximum height to prevent the lists from becoming too large */
+overflow-y: auto;
+border: 1px solid #ccc;
+background-color: #fff;
+padding: 10px;
+}
+
+/* Adjust the size of the input boxes for employee jobTitle */
+#addFormEmployee input[type="jobTitle"] {
+grid-column: 4 / 11; /* Input box spans seven columns */
+width: 100%;
+max-width: 200px;
+}
+#addFormEmployee input[type="text"],
+#addFormEmployee input[type="date"],
+#addFormEmployee input[type="email"],
+#addFormEmployee input[type="jobTitle"],
+#addFormEmployee select,
+#addFormEmployee input[type="time"] {
+grid-column: 4 / 11; /* Input boxes span seven columns */
+width: 100%;
+max-width: 200px;
+}
