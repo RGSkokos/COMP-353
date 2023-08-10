@@ -324,6 +324,9 @@
             
 </form>
     <script>
+        const uniqueViruses = {};
+        const uniqueVaccines = {};
+
         document.addEventListener("DOMContentLoaded", function () {
             const submitButtonFacility = document.getElementById("SubmitCreateFacility");
             const submitButtonStudent = document.getElementById("SubmitAddStudent");
@@ -332,6 +335,7 @@
             const submitButtonNewInfection = document.getElementById("SubmitNewInfection");
             const submitButtonNewVaccination = document.getElementById("SubmitNewVaccination");
             const deletefacilitiesButton = document.getElementById("deletefacilitiesButton");
+            const filterfacilitySelectEmails = document.getElementById("filterfacilitySelectEmails");
             
             //CREATE eventlistener
             //Facilty
@@ -371,7 +375,7 @@
             submitButtonStudent.addEventListener("click", function () {
                 const medicareID = document.getElementById("studentmedicareID").value;
                 const firstName = document.getElementById("studentfirstName").value;
-                const lastName = document.getElementById("studentlastName").value;
+                const lastname = document.getElementById("studentlastName").value;
                 const dOB = document.getElementById("studentdOB").value;
                 const MedicareExpiryDate = document.getElementById("studentMedicareExpiryDate").value;
                 const phone = document.getElementById("studentphone").value;
@@ -387,7 +391,7 @@
                     const requestData = {
                         medicareID: medicareID,
                         firstName: firstName,
-                        lastName: lastName,
+                        lastname: lastname,
                         dOB: dOB,
                         MedicareExpiryDate: MedicareExpiryDate,
                         phone: phone,
@@ -407,7 +411,7 @@
             submitButtonEmployee.addEventListener("click", function () {
                 const medicareID = document.getElementById("employeemedicareID").value;
                 const firstName = document.getElementById("employeefirstName").value;
-                const lastName = document.getElementById("employeelastName").value;
+                const lastname = document.getElementById("employeelastName").value;
                 const dOB = document.getElementById("employeedOB").value;
                 const MedicareExpiryDate = document.getElementById("employeeMedicareExpiryDate").value;
                 const phone = document.getElementById("employeephone").value;
@@ -424,7 +428,7 @@
                     const requestData = {
                         medicareID: medicareID,
                         firstName: firstName,
-                        lastName: lastName,
+                        lastname: lastname,
                         dOB: dOB,
                         MedicareExpiryDate: MedicareExpiryDate,
                         phone: phone,
@@ -469,14 +473,14 @@
         //Infection
         submitButtonNewInfection.addEventListener("click", function () {
                 const medicareID = document.getElementById("infectedmedicareID").value;
-                const infectionName = document.getElementById("infectionName").value;
-                const infectionDate = document.getElementById("infectionDate").value;
+                const vID = document.getElementById("infectionName").value;
+                const date = document.getElementById("infectionDate").value;
 
                 if(medicareID) {
                     const requestData = {
                         medicareID: medicareID,
-                        infectionName: infectionName,
-                        infectionDate: infectionDate
+                        vID: vID,
+                        date: date
                     };
 
                     sendDataToPhp("addInfection", requestData);
@@ -486,29 +490,50 @@
         //Vaccination
         submitButtonNewVaccination.addEventListener("click", function () {
                 const medicareID = document.getElementById("vaccinatedmedicareID").value;
-                const vaccineName = document.getElementById("vaccineName").value;
+                const vID = document.getElementById("vaccineName").value;
                 const numDose = document.getElementById("numDose").value;
-                const vaccineDate = document.getElementById("vaccineDate").value;
+                const date = document.getElementById("vaccineDate").value;
 
                 if(medicareID) {
                     const requestData = {
                         medicareID: medicareID,
-                        vaccineName: vaccineName,
+                        vID: vID,
                         numDose: numDose,
-                        vaccineDate: vaccineDate
+                        date: date
                     };
 
                     sendDataToPhp("addVaccination", requestData);
                 }
         });
-        
+        filterfacilitySelectEmails.addEventListener("click", function() {
+            const facilityID = document.getElementById("facilitySelectEmails").value;
+            const requestData = {
+                facilityID: facilityID
+            };
+            sendEmailDataToPhp("getFacilityEmails", requestData);
+           
+        });
 
 
-
-    });
-
-
-           // Function to fetch and populate facilities list
+        });
+        function sendEmailDataToPhp(action, requestData) {
+            fetch('getArgi.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action, ...requestData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Populate the email list with data
+                populateEmailList(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+   // Function to fetch and populate facilities list
     function loadFacilities() {
         fetch('getArgi.php', {
             method: 'POST',
@@ -523,9 +548,11 @@
         .then(data => {
             const facilitiesList = document.getElementById('facilitiesList');
             const facilitiesSelect = document.getElementById('facilitiesSelect');
+            const facilitySelectEmails = document.getElementById('facilitySelectEmails');
             
             facilitiesList.innerHTML = ''; // Clear the list
             facilitiesSelect.innerHTML = ''; // Clear the dropdown
+            facilitySelectEmails.innerHTML = ''; // Clear the dropdown
 
             // Populate the list and dropdown with retrieved data
             data.forEach(facility => {
@@ -539,6 +566,12 @@
                 option.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
                 option.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
                 facilitiesSelect.appendChild(option);
+
+                const option2 = document.createElement('option');
+                option2.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
+                option2.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
+                facilitySelectEmails.appendChild(option2);
+
             });
         })
         .catch(error => {
@@ -663,28 +696,53 @@
             .then(response => response.json())
             .then(data => {
                 const infectionsList = document.getElementById('infectionsList');
-                const infectionsSelect = document.getElementById('infectionName');
                 infectionsList.innerHTML = ''; // Clear the list
-        
-                // Create an empty object to store unique virus IDs and names
-                const uniqueViruses = {};
-        
                 // Populate the list
                 data.forEach(infection => {
                     const listItem = document.createElement('li');
                     listItem.textContent = 'Name: ' + infection.firstName + " " + infection.lastName + ', Medicare ID: ' + infection.medicareID + ', Infection Name: ' + infection.virusName + ', Infection Date: ' + infection.infectionDate;
                     infectionsList.appendChild(listItem);
                     infectionsList.appendChild(document.createTextNode('\u00A0'));
+                });
+            })
+            .catch(error => {
+                console.error('Error loading infections:', error);
+            });
+        }
+
+        // Function to fetch and populate Virus list
+        function loadViruses(){
+            fetch('getArgi.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'getViruses' // This action should match the one in your PHP script
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                
+                const infectionsSelect = document.getElementById('infectionName');
+                infectionsSelect.innerHTML = ''; // Clear the list
+        
+                // Create an empty object to store unique virus IDs and names
+                const uniqueViruses = {};
+        
+                // Populate the list
+                data.forEach(virus => {
+                    const listItem = document.createElement('li');
         
                     // Add only unique virus IDs and names to the dropdown
-                    if (!uniqueViruses[infection.vID]) {
+                    if (!uniqueViruses[virus.vID]) {
                         const option = document.createElement('option');
-                        option.value = infection.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = infection.virusName; // Replace 'virusName' with the appropriate property name
+                        option.value = virus.vID; // Replace 'vID' with the appropriate property name for virus ID
+                        option.textContent = virus.type; // Replace 'virusName' with the appropriate property name
                         infectionsSelect.appendChild(option);
         
                         // Mark the virus ID as encountered
-                        uniqueViruses[infection.vID] = true;
+                        uniqueViruses[virus.vID] = true;
                     }
                 });
             })
@@ -707,11 +765,7 @@
             .then(response => response.json())
             .then(data => {
                 const vaccinationsList = document.getElementById('vaccinationsList');
-                const vaccinationsSelect = document.getElementById('vaccineName');
                 vaccinationsList.innerHTML = ''; // Clear the list
-        
-                // Create an empty object to store unique virus IDs and names
-                const uniqueVaccines = {};
         
                 // Populate the list
                 data.forEach(vaccination => {
@@ -719,43 +773,97 @@
                     listItem.textContent = 'Name: ' + vaccination.firstName + " " + vaccination.lastName + ', Medicare ID: ' + vaccination.medicareID + ', Vaccine Name: ' + vaccination.vaccineName + ', Number of Doses: ' + vaccination.numDose + ', Vaccine Date: ' + vaccination.date;
                     vaccinationsList.appendChild(listItem);
                     vaccinationsList.appendChild(document.createTextNode('\u00A0'));
-        
-                    // Add only unique virus IDs and names to the dropdown
-                    if (!uniqueVaccines[vaccination.vID]) {
-                        const option = document.createElement('option');
-                        option.value = vaccination.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = vaccination.vaccineName; // Replace 'virusName' with the appropriate property name
-                        vaccinationsSelect.appendChild(option);
-        
-                        // Mark the virus ID as encountered
-                        uniqueVaccines[vaccination.vID] = true;
-                    }
                 });
             })
             .catch(error => {
                 console.error('Error loading vaccinations:', error);
             });
         }
+         // Function to fetch and populate infections list
+         function loadVaccineTypes(){
+            fetch('getArgi.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'getVaccines' // This action should match the one in your PHP script
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                
+                const vaccineSelect = document.getElementById('vaccineName');
+                vaccineSelect.innerHTML = ''; // Clear the list
+        
+                // Create an empty object to store unique virus IDs and names
+                const uniqueVaccines= {};
+        
+                // Populate the list
+                data.forEach(vaccines => {
+                    const listItem = document.createElement('li');
+        
+                    // Add only unique virus IDs and names to the dropdown
+                    if (!uniqueVaccines[vaccines.vID]) {
+                        const option = document.createElement('option');
+                        option.value = vaccines.vID; // Replace 'vID' with the appropriate property name for virus ID
+                        option.textContent = vaccines.vaccineName; // Replace 'virusName' with the appropriate property name
+                        vaccineSelect.appendChild(option);
+        
+                        // Mark the virus ID as encountered
+                        uniqueVaccines[vaccines.vID] = true;
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading infections:', error);
+            });
+        }
+        function populateEmailList(emails) {
+            const emailList = document.getElementById("emailList");
+            emailList.innerHTML = ""; // Clear the list first
+    
+            // Populate the list with email data
+            emails.forEach(email => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <strong>Subject:</strong> ${email.subject}<br>
+                    <strong>Receiver:</strong> ${email.receiverEmail}<br>
+                    <strong>Date:</strong> ${email.dateOfEmail}<br>
+                    <strong>Facility:</strong> ${email.facilityName}<br>
+                    <p>${email.emailBody}</p>
+                `;
+                emailList.appendChild(listItem);
+            });
+        }
 
 
         function sendDataToPhp(action, data) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "mainpageArgi.php", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    console.log(response.message); // Display the response message
-                }
-            };
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "mainpageArgi.php", true);
+                    xhr.setRequestHeader("Content-Type", "application/json");
 
-            var jsonData = JSON.stringify({
-                action: action,
-                data: data
-            });
-            console.log(jsonData)
-            xhr.send(jsonData);
-        }
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                var response = JSON.parse(xhr.responseText);
+                                console.log(response.message); // Display the response message
+                            } else {
+                                console.error("Request failed with status: " + xhr.status);
+                                // Handle the error condition appropriately
+                            }
+                        }
+                    };
+
+                    var requestData = {
+                        action: action,
+                        data: data
+                    };
+
+                    var jsonData = JSON.stringify(requestData);
+                    console.log(jsonData);
+                    xhr.send(jsonData);
+                }
 
         function convertTo24HourFormat(time) {
             const [timePart, period] = time.split(' ');
@@ -783,6 +891,8 @@
         window.addEventListener('DOMContentLoaded', loadEmployeesSchedule);
         window.addEventListener('DOMContentLoaded', loadInfections);
         window.addEventListener('DOMContentLoaded', loadVaccinations);
+        window.addEventListener('DOMContentLoaded', loadViruses);
+        window.addEventListener('DOMContentLoaded', loadVaccineTypes);
 
     </script>
 </body>

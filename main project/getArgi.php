@@ -44,8 +44,10 @@ if ($conn->connect_error) {
                 AND a.medicareID = s.medicareID;";
         processQuery($conn, $query);
     } elseif ($requestData['action'] === 'getEmployees'){
-        $query = "SELECT * FROM People p, Employee e 
-        WHERE p.medicareID = e.medicareID;"; 
+        $query = "SELECT * FROM People p, Employee e, Facilities f, attends a
+        WHERE p.medicareID = e.medicareID
+        AND f.fID = a.fID
+        AND a.medicareID = e.medicareID;";  
         processQuery($conn, $query);
     } 
     elseif ($requestData['action'] === 'getEmployeeSchedules'){
@@ -103,6 +105,35 @@ if ($conn->connect_error) {
         "; 
         processQuery($conn, $query);
     } 
+    elseif ($requestData['action'] === 'getVaccines'){
+        $query = "SELECT * FROM Vaccines;"; 
+        processQuery($conn, $query);
+    }
+    elseif ($requestData['action'] === 'getViruses'){
+        $query = "SELECT * FROM Viruses;"; 
+        processQuery($conn, $query);
+    }
+    elseif ($requestData['action'] === 'getFacilityEmails'){ 
+        $facilityID = $requestData['facilityID'];
+        $query = "SELECT
+        em.subject as subject,
+        em.receiverEmail as receiverEmail,
+        em.emailBody as emailBody,
+        em.dateOfEmail as dateOfEmail,
+        f.facilityName as facilityName
+        FROM emailLogs em
+        JOIN sent s ON em.emailID = s.emailID
+        JOIN Facilities f ON s.fID = f.fID
+        WHERE f.fID = ?";
+        
+        // Use prepared statements to prevent SQL injection
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $facilityID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        processEmailQuery($result);
+    }
     
     else {
         $response = array('message' => 'Invalid action');
@@ -126,6 +157,13 @@ function processQuery($conn, $query) {
         $response = array('message' => 'Error retrieving data: ' . $conn->error);
         sendResponse($response);
     }
+}
+function processEmailQuery($result) {
+    $emails = array();
+    while ($row = $result->fetch_assoc()) {
+        $emails[] = $row;
+    }
+    sendResponse($emails);
 }
 
 function sendResponse($data) {
