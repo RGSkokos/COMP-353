@@ -312,7 +312,7 @@
                          <option value="">Select a Facility</option>
                          <!-- JavaScript will populate this dropdown -->
                     </select>
-                <button type="button" id="filterfacilitySelectEmails">Generate Emails</button>
+                <button type="button" id="filterfacilitySelectEmails">Display Emails</button>
 
                 <!-- Display Emails -->
                 <div class="listContainer">
@@ -324,6 +324,8 @@
             
 </form>
     <script>
+        const uniqueViruses = {};
+        const uniqueVaccines = {};
         document.addEventListener("DOMContentLoaded", function () {
             const submitButtonFacility = document.getElementById("SubmitCreateFacility");
             const submitButtonStudent = document.getElementById("SubmitAddStudent");
@@ -343,6 +345,7 @@
             const editInfectionsButton = document.getElementById("editInfectionsButton");
             const deleteVaccinesButton = document.getElementById("deleteVaccinesButton");
             const editVaccinesButton = document.getElementById("editVaccinesButton");
+            const filterfacilitySelectEmails = document.getElementById("filterfacilitySelectEmails");
 
             
             //CREATE eventlistener
@@ -478,36 +481,36 @@
                 }
             });
 
-        //Infection
-        submitButtonNewInfection.addEventListener("click", function () {
+            //Infection
+            submitButtonNewInfection.addEventListener("click", function () {
                 const medicareID = document.getElementById("infectedmedicareID").value;
                 const infectionName = document.getElementById("infectionName").value;
-                const infectionDate = document.getElementById("infectionDate").value;
+                const date = document.getElementById("infectionDate").value;
 
                 if(medicareID) {
                     const requestData = {
                         medicareID: medicareID,
                         infectionName: infectionName,
-                        infectionDate: infectionDate
+                        date: date
                     };
 
                     sendDataToPhp("addInfection", requestData);
                 }
         });
 
-        //Vaccination
-        submitButtonNewVaccination.addEventListener("click", function () {
+            //Vaccination
+            submitButtonNewVaccination.addEventListener("click", function () {
                 const medicareID = document.getElementById("vaccinatedmedicareID").value;
                 const vaccineName = document.getElementById("vaccineName").value;
                 const numDose = document.getElementById("numDose").value;
-                const vaccineDate = document.getElementById("vaccineDate").value;
+                const date = document.getElementById("vaccineDate").value;
 
                 if(medicareID) {
                     const requestData = {
                         medicareID: medicareID,
                         vaccineName: vaccineName,
                         numDose: numDose,
-                        vaccineDate: vaccineDate
+                        date: date
                     };
 
                     sendDataToPhp("addVaccination", requestData);
@@ -515,7 +518,7 @@
         });
         // DElETE
 
-        deletefacilitiesButton.addEventListener("click", function () {
+            deletefacilitiesButton.addEventListener("click", function () {
             const facilityId = document.getElementById("facilitiesSelect").value;
             if (facilityId) {
                 const requestData = {
@@ -524,7 +527,7 @@
                 delDataToPhp("deleteFacility", requestData);
             }   
         });
-        editfacilitiesButton.addEventListener("click", function () {
+            editfacilitiesButton.addEventListener("click", function () {
             const facilityId = document.getElementById("facilitiesSelect").value;
 
             if (facilityId) {
@@ -744,11 +747,35 @@
                     editDataPhp("editVaccination", requestData);
                 }
             });
+            filterfacilitySelectEmails.addEventListener("click", function() {
+                const facilityID = document.getElementById("facilitySelectEmails").value;
+                const requestData = {
+                    facilityID: facilityID
+                };
+                sendEmailDataToPhp("getFacilityEmails", requestData);
+               
+            });
 
 
 
     });
-
+    function sendEmailDataToPhp(action, requestData) {
+        fetch('getArgi.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action, ...requestData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Populate the email list with data
+            populateEmailList(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 
            // Function to fetch and populate facilities list
     function loadFacilities() {
@@ -765,9 +792,11 @@
         .then(data => {
             const facilitiesList = document.getElementById('facilitiesList');
             const facilitiesSelect = document.getElementById('facilitiesSelect');
+            const facilitySelectEmails = document.getElementById('facilitySelectEmails');
             
             facilitiesList.innerHTML = ''; // Clear the list
             facilitiesSelect.innerHTML = ''; // Clear the dropdown
+            facilitySelectEmails.innerHTML = ''; // Clear the dropdown
 
             // Populate the list and dropdown with retrieved data
             data.forEach(facility => {
@@ -781,6 +810,11 @@
                 option.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
                 option.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
                 facilitiesSelect.appendChild(option);
+
+                const option2 = document.createElement('option');
+                option2.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
+                option2.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
+                facilitySelectEmails.appendChild(option2);
             });
         })
         .catch(error => {
@@ -934,6 +968,47 @@
                 console.error('Error loading infections:', error);
             });
         }
+        // Function to fetch and populate Virus list
+        function loadViruses(){
+            fetch('getArgi.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'getViruses' // This action should match the one in your PHP script
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                
+                const infectionsSelect = document.getElementById('infectionName');
+                infectionsSelect.innerHTML = ''; // Clear the list
+        
+                // Create an empty object to store unique virus IDs and names
+                const uniqueViruses = {};
+        
+                // Populate the list
+                data.forEach(virus => {
+                    const listItem = document.createElement('li');
+        
+                    // Add only unique virus IDs and names to the dropdown
+                    if (!uniqueViruses[virus.vID]) {
+                        const option = document.createElement('option');
+                        option.value = virus.vID; // Replace 'vID' with the appropriate property name for virus ID
+                        option.textContent = virus.type; // Replace 'virusName' with the appropriate property name
+                        infectionsSelect.appendChild(option);
+        
+                        // Mark the virus ID as encountered
+                        uniqueViruses[virus.vID] = true;
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading infections:', error);
+            });
+        }
+
 
         // Function to fetch and populate vaccinations list
         function loadVaccinations(){
@@ -978,6 +1053,64 @@
                 console.error('Error loading vaccinations:', error);
             });
         }
+        // Function to fetch and populate infections list
+        function loadVaccineTypes(){
+            fetch('getArgi.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'getVaccines' // This action should match the one in your PHP script
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                
+                const vaccineSelect = document.getElementById('vaccineName');
+                vaccineSelect.innerHTML = ''; // Clear the list
+        
+                // Create an empty object to store unique virus IDs and names
+                const uniqueVaccines= {};
+        
+                // Populate the list
+                data.forEach(vaccines => {
+                    const listItem = document.createElement('li');
+        
+                    // Add only unique virus IDs and names to the dropdown
+                    if (!uniqueVaccines[vaccines.vID]) {
+                        const option = document.createElement('option');
+                        option.value = vaccines.vID; // Replace 'vID' with the appropriate property name for virus ID
+                        option.textContent = vaccines.vaccineName; // Replace 'virusName' with the appropriate property name
+                        vaccineSelect.appendChild(option);
+        
+                        // Mark the virus ID as encountered
+                        uniqueVaccines[vaccines.vID] = true;
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading infections:', error);
+            });
+        }
+        function populateEmailList(emails) {
+            const emailList = document.getElementById("emailList");
+            emailList.innerHTML = ""; // Clear the list first
+    
+            // Populate the list with email data
+            emails.forEach(email => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <strong>Subject:</strong> ${email.subject}<br>
+                    <strong>Receiver:</strong> ${email.receiverEmail}<br>
+                    <strong>Date:</strong> ${email.dateOfEmail}<br>
+                    <strong>Facility:</strong> ${email.facilityName}<br>
+                    <p>${email.emailBody}</p>
+                `;
+                emailList.appendChild(listItem);
+            });
+        }
+
 
 
         function sendDataToPhp(action, data) {
@@ -1073,7 +1206,8 @@
         window.addEventListener('DOMContentLoaded', loadEmployeesSchedule);
         window.addEventListener('DOMContentLoaded', loadInfections);
         window.addEventListener('DOMContentLoaded', loadVaccinations);
-
+        window.addEventListener('DOMContentLoaded', loadViruses);
+        window.addEventListener('DOMContentLoaded', loadVaccineTypes);
         //Load the page when delete button is clicked
         deletefacilitiesButton.addEventListener('click', loadFacilities);
         editfacilitiesButton.addEventListener('click', loadFacilities);
@@ -1087,6 +1221,7 @@
         editInfectionsButton.addEventListener('click', loadInfections);
         deleteVaccinationsButton.addEventListener('click', loadVaccinations);
         editVaccinationsButton.addEventListener('click', loadVaccinations);
+
         
 
     </script>
