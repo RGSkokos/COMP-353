@@ -649,7 +649,7 @@ function EditInfections(
     $vID = "SELECT vID FROM Infections WHERE infectionName = '$infectionName'";
 
     // set changes in people table
-    $sql = "UPDATE Infections SET date = '$date' WHERE medicareID = '$medicareID' AND vID = '$vID',";
+    $sql = "UPDATE Infections SET date = '$date' WHERE medicareID = '$medicareID' AND vID = '$vID'";
     if ($conn->query($sql) === TRUE) {
         echo "Infections updated successfully";
       } else {
@@ -954,4 +954,41 @@ function valueExists($table, $column, $value)
     }
     return false;
 }
-?>
+
+// Send email for every schedule
+function SundayScheduleEmail(){
+  global $servername, $username, $password, $dbname;
+  $conn = new mysqli($servername, $username, $password, $dbname);
+
+// Get the current day of the week (1 for Monday, 2 for Tuesday, etc.)
+$currentDayOfWeek = date('N');
+
+// Check if today is MSunday (7)
+if ($currentDayOfWeek === 7) {
+    echo "Today is Sunday!";
+  // query to select every employee of each facility
+  $sql = mysqli_query($conn, "SELECT f.fID, a.medicareID from Facilities as f inner join attends as a on a.fID = f.fID inner join Employee as e on e.medicareID = a.medicareID where endDate is null or endDate > date_add(curdate(), interval 1 week) order by f.fID;");
+  while($row = mysqli_fetch_array($sql)){
+    $fID = $row['fID'];
+    $medicareID = $row['medicareID'];
+    $sql1 = "INSERT into emailLogs (dateOfEmail, receiverEmail, emailBody, subject) values (curdate(), (select email from People where medicareID = '$medicareID'), 'sample schedule body','schedule')";
+    if ($conn->query($sql1) === TRUE) {
+        echo "Email logged successfully";
+      } else {
+        echo "Error sending email" . $conn->error;
+      }
+    $sql2 = "INSERT into sent(emailID, fID, medicareID) values (last_insert_id(), '$fID', '$medicareID);";
+    if ($conn->query($sql2) === TRUE) {
+        echo "Inserted into sent successfully";
+      } else {
+        echo "Error adding email to sent" . $conn->error;
+      }
+  }
+    
+
+} else {
+    echo "Today is not Sunday.";
+}
+  $conn->close();
+}
+?> 
