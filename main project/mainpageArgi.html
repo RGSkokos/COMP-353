@@ -324,9 +324,6 @@
             
 </form>
     <script>
-        const uniqueViruses = {};
-        const uniqueVaccines = {};
-
         document.addEventListener("DOMContentLoaded", function () {
             const submitButtonFacility = document.getElementById("SubmitCreateFacility");
             const submitButtonStudent = document.getElementById("SubmitAddStudent");
@@ -334,8 +331,19 @@
             const submitButtonEmployeeSchedule = document.getElementById("SubmitAddEmployeeSchedule");
             const submitButtonNewInfection = document.getElementById("SubmitNewInfection");
             const submitButtonNewVaccination = document.getElementById("SubmitNewVaccination");
+            const editfacilitiesButton = document.getElementById("editfacilitiesButton");
             const deletefacilitiesButton = document.getElementById("deletefacilitiesButton");
-            const filterfacilitySelectEmails = document.getElementById("filterfacilitySelectEmails");
+            const deleteStudentButton = document.getElementById("deleteStudentButton");
+            const editStudentButton = document.getElementById("editStudentButton");
+            const deleteEmployeeButton = document.getElementById("deleteEmployeesButton");
+            const editEmployeeButton = document.getElementById("editEmployeesButton");
+            const deleteEmployeeScheduleButton = document.getElementById("deleteScheduleButton");
+            const editEmployeeScheduleButton = document.getElementById("editScheduleButton");
+            const deleteInfectionsButton = document.getElementById("deleteInfectionsButton");
+            const editInfectionsButton = document.getElementById("editInfectionsButton");
+            const deleteVaccinesButton = document.getElementById("deleteVaccinesButton");
+            const editVaccinesButton = document.getElementById("editVaccinesButton");
+
             
             //CREATE eventlistener
             //Facilty
@@ -375,7 +383,7 @@
             submitButtonStudent.addEventListener("click", function () {
                 const medicareID = document.getElementById("studentmedicareID").value;
                 const firstName = document.getElementById("studentfirstName").value;
-                const lastname = document.getElementById("studentlastName").value;
+                const lastName = document.getElementById("studentlastName").value;
                 const dOB = document.getElementById("studentdOB").value;
                 const MedicareExpiryDate = document.getElementById("studentMedicareExpiryDate").value;
                 const phone = document.getElementById("studentphone").value;
@@ -391,7 +399,7 @@
                     const requestData = {
                         medicareID: medicareID,
                         firstName: firstName,
-                        lastname: lastname,
+                        lastName: lastName,
                         dOB: dOB,
                         MedicareExpiryDate: MedicareExpiryDate,
                         phone: phone,
@@ -411,7 +419,7 @@
             submitButtonEmployee.addEventListener("click", function () {
                 const medicareID = document.getElementById("employeemedicareID").value;
                 const firstName = document.getElementById("employeefirstName").value;
-                const lastname = document.getElementById("employeelastName").value;
+                const lastName = document.getElementById("employeelastName").value;
                 const dOB = document.getElementById("employeedOB").value;
                 const MedicareExpiryDate = document.getElementById("employeeMedicareExpiryDate").value;
                 const phone = document.getElementById("employeephone").value;
@@ -428,7 +436,7 @@
                     const requestData = {
                         medicareID: medicareID,
                         firstName: firstName,
-                        lastname: lastname,
+                        lastName: lastName,
                         dOB: dOB,
                         MedicareExpiryDate: MedicareExpiryDate,
                         phone: phone,
@@ -473,14 +481,14 @@
         //Infection
         submitButtonNewInfection.addEventListener("click", function () {
                 const medicareID = document.getElementById("infectedmedicareID").value;
-                const vID = document.getElementById("infectionName").value;
-                const date = document.getElementById("infectionDate").value;
+                const infectionName = document.getElementById("infectionName").value;
+                const infectionDate = document.getElementById("infectionDate").value;
 
                 if(medicareID) {
                     const requestData = {
                         medicareID: medicareID,
-                        vID: vID,
-                        date: date
+                        infectionName: infectionName,
+                        infectionDate: infectionDate
                     };
 
                     sendDataToPhp("addInfection", requestData);
@@ -490,50 +498,259 @@
         //Vaccination
         submitButtonNewVaccination.addEventListener("click", function () {
                 const medicareID = document.getElementById("vaccinatedmedicareID").value;
-                const vID = document.getElementById("vaccineName").value;
+                const vaccineName = document.getElementById("vaccineName").value;
                 const numDose = document.getElementById("numDose").value;
-                const date = document.getElementById("vaccineDate").value;
+                const vaccineDate = document.getElementById("vaccineDate").value;
 
                 if(medicareID) {
                     const requestData = {
                         medicareID: medicareID,
-                        vID: vID,
+                        vaccineName: vaccineName,
                         numDose: numDose,
-                        date: date
+                        vaccineDate: vaccineDate
                     };
 
                     sendDataToPhp("addVaccination", requestData);
                 }
         });
-        filterfacilitySelectEmails.addEventListener("click", function() {
-            const facilityID = document.getElementById("facilitySelectEmails").value;
-            const requestData = {
-                facilityID: facilityID
-            };
-            sendEmailDataToPhp("getFacilityEmails", requestData);
-           
-        });
+        // DElETE
 
-
+        deletefacilitiesButton.addEventListener("click", function () {
+            const facilityId = document.getElementById("facilitiesSelect").value;
+            if (facilityId) {
+                const requestData = {
+                    id: facilityId
+                };
+                delDataToPhp("deleteFacility", requestData);
+            }   
         });
-        function sendEmailDataToPhp(action, requestData) {
-            fetch('getArgi.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ action, ...requestData })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Populate the email list with data
-                populateEmailList(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
+        editfacilitiesButton.addEventListener("click", function () {
+            const facilityId = document.getElementById("facilitiesSelect").value;
+
+            if (facilityId) {
+                const facilityName = prompt("Enter the new Facility Name:");
+                const type = prompt("Enter the new Facility Type:");
+                const description = prompt("Enter the new Facility Description:");
+                const address = prompt("Enter the new Facility Address:");
+                const city = prompt("Enter the new Facility City:");
+                const province = prompt("Enter the new Facility Province:");
+                const postalCode = prompt("Enter the new Facility Postal Code:");
+                const phoneNumber = prompt("Enter the new Facility Phone Number:");
+                const webAddr = prompt("Enter the new Facility Web Address:");
+                const capacity = prompt("Enter the new Facility Capacity:");
+
+                const requestData = {
+                    id: facilityId,
+                    facilityName: facilityName,
+                    type: type,
+                    description: description,
+                    address: address,
+                    city: city,
+                    province: province,
+                    postalCode: postalCode,
+                    phoneNumber: phoneNumber,
+                    webAddr: webAddr,
+                    capacity: capacity
+                };
+
+                editDataPhp("editFacility", requestData);
+            }
+        });
+            deleteStudentButton.addEventListener("click", function () {
+                const medicareID = document.getElementById("studentSelect").value;
+                if (medicareID) {
+                    const requestData = {
+                        medicareID: medicareID
+                    };
+                    delDataToPhp("deleteStudent", requestData);
+                }   
             });
-        }
-   // Function to fetch and populate facilities list
+            editStudentButton.addEventListener("click", function () {
+                const medicareID = document.getElementById("studentSelect").value;
+
+                if (medicareID) {
+                    const newFirstName = prompt("Enter the new First Name:");
+                        const newLastName = prompt("Enter the new Last Name:");
+                        const newDOB = prompt("Enter the new Date of Birth (YYYY/MM/DD):");
+                        const newMedicareExpiryDate = prompt("Enter the new Medicare Expiry Date (YYYY/MM/DD):");
+                        const newPhone = prompt("Enter the new Phone Number:");
+                        const newAddress = prompt("Enter the new Address:");
+                        const newCity = prompt("Enter the new City:");
+                        const newProvince = prompt("Enter the new Province:");
+                        const newPostalCode = prompt("Enter the new Postal Code:");
+                        const newEmail = prompt("Enter the new Email:");
+                        const newFacilityId = prompt("Enter the new Facility ID:");
+
+                    const requestData = {
+                        medicareID: medicareID,
+                        firstName: newFirstName,
+                        lastName: newLastName,
+                        dOB: newDOB,
+                        MedicareExpiryDate: newMedicareExpiryDate,
+                        phone: newPhone,
+                        address: newAddress,
+                        city: newCity,
+                        province: newProvince,
+                        postalCode: newPostalCode,
+                        email: newEmail,
+                        fID: newFacilityId
+                    };
+
+                    editDataPhp("editStudent", requestData);
+
+                }
+
+            });
+            deleteEmployeeButton.addEventListener("click", function () {
+                const medicareID = document.getElementById("employeesSelect").value;
+                if (medicareID) {
+                    const requestData = {
+                        medicareID: medicareID
+                    };
+                    delDataToPhp("deleteEmployee", requestData);
+                }   
+            });
+            editEmployeeButton.addEventListener("click", function () {
+                const medicareID = document.getElementById("employeesSelect").value;
+
+                if (medicareID) {
+                    const newFirstName = prompt("Enter the new First Name:");
+                        const newLastName = prompt("Enter the new Last Name:");
+                        const newDOB = prompt("Enter the new Date of Birth (YYYY/MM/DD):");
+                        const newMedicareExpiryDate = prompt("Enter the new Medicare Expiry Date (YYYY/MM/DD):");
+                        const newPhone = prompt("Enter the new Phone Number:");
+                        const newAddress = prompt("Enter the new Address:");
+                        const newCity = prompt("Enter the new City:");
+                        const newProvince = prompt("Enter the new Province:");
+                        const newPostalCode = prompt("Enter the new Postal Code:");
+                        const newEmail = prompt("Enter the new Email:");
+                        const newFacilityId = prompt("Enter the new Facility ID:");
+                        const newJobTitle = prompt("Enter the new Job Title:");
+
+                    const requestData = {
+                        medicareID: medicareID,
+                        firstName: newFirstName,
+                        lastName: newLastName,
+                        dOB: newDOB,
+                        MedicareExpiryDate: newMedicareExpiryDate,
+                        phone: newPhone,
+                        address: newAddress,
+                        city: newCity,
+                        province: newProvince,
+                        postalCode: newPostalCode,
+                        email: newEmail,
+                        fID: newFacilityId,
+                        jobTitle: newJobTitle
+                    };
+
+                    editDataPhp("editEmployee", requestData);
+
+                }
+
+            });
+            deleteEmployeeButton.addEventListener("click", function () {
+                const medicareID = document.getElementById("employeesSelect").value;
+                if (medicareID) {
+                    const requestData = {
+                        medicareID: medicareID
+                    };
+                    delDataToPhp("deleteEmployee", requestData);
+                }   
+            });
+            editEmployeeScheduleButton.addEventListener("click", function () {
+                const scheduleMedicareID = prompt("Enter the Medicare ID:");
+                const scheduleDate = prompt("Enter the Date (YYYY/MM/DD):");
+
+                if (scheduleMedicareID && scheduleDate) {
+                const newStartTime = prompt("Enter the new Start Time:");
+                const newEndTime = prompt("Enter the new End Time:");
+                convertTo24HourFormat(newStartTime);
+                convertTo24HourFormat(newEndTime);
+                    const requestData = {
+                        medicareID: scheduleMedicareID,
+                        date: scheduleDate,
+                        startTime: newStartTime,
+                        endTime: newEndTime
+                    };
+
+                    editDataPhp("editSchedule", requestData);
+
+                }
+            });
+            deleteEmployeeScheduleButton.addEventListener("click", function () {
+                const scheduleMedicareID = prompt("Enter the Medicare ID:");
+                const scheduleDate = prompt("Enter the Date (YYYY/MM/DD):");
+                if (scheduleMedicareID && scheduleDate) {
+                    const requestData = {
+                        medicareID: scheduleMedicareID,
+                        date: scheduleDate
+                    };
+                    delDataToPhp("deleteSchedule", requestData);
+                }   
+            });
+            deleteInfectionsButton.addEventListener("click", function() {
+                const medicareID = prompt("Enter the Medicare ID:");
+                const infectionName = prompt("Enter the Infection Name:");
+                const infectionDate = prompt("Enter the Infection Date (YYYY/MM/DD):");
+                if (medicareID && infectionName && infectionDate) {
+                    const requestData = {
+                        medicareID: medicareID,
+                        infectionName: infectionName,
+                        infectionDate: infectionDate
+                    };
+                    delDataToPhp("deleteInfection", requestData);
+                }
+            });
+            editInfectionsButton.addEventListener("click", function() {
+                const medicareID = prompt("Enter the Medicare ID:");
+                const infectionName = prompt("Enter the Infection Name:");
+                const infectionDate = prompt("Enter the Infection Date (YYYY/MM/DD):");
+                if (medicareID && infectionName && infectionDate) {
+                    const newInfectionDate = prompt("Enter the new Infection Date (YYYY/MM/DD):");
+                    const requestData = {
+                        medicareID: medicareID,
+                        infectionName: infectionName,
+                        infectionDate: infectionDate,
+                        newInfectionDate: newInfectionDate
+                    };
+                    editDataPhp("editInfection", requestData);
+                }
+            });
+            deleteVaccinesButton.addEventListener("click", function() {
+                const medicareID = prompt("Enter the Medicare ID:");
+                const vaccinationName = prompt("Enter the Vaccination Name:");
+                const vaccinationDate = prompt("Enter the Vaccination Date (YYYY/MM/DD):");
+                if (medicareID && vaccinationName && vaccinationDate) {
+                    const requestData = {
+                        medicareID: medicareID,
+                        vaccinationName: vaccinationName,
+                        vaccinationDate: vaccinationDate
+                    };
+                    delDataToPhp("deleteVaccination", requestData);
+                }
+            });
+            editVaccinesButton.addEventListener("click", function() {
+                const medicareID = prompt("Enter the Medicare ID:");
+                const vaccinationName = prompt("Enter the Vaccination Name:");
+                const vaccinationDate = prompt("Enter the Vaccination Date (YYYY/MM/DD):");
+                if (medicareID && vaccinationName && vaccinationDate) {
+                    const newVaccinationDate = prompt("Enter the new Vaccination Date (YYYY/MM/DD):");
+                    const requestData = {
+                        medicareID: medicareID,
+                        vaccinationName: vaccinationName,
+                        vaccinationDate: vaccinationDate,
+                        newVaccinationDate: newVaccinationDate
+                    };
+                    editDataPhp("editVaccination", requestData);
+                }
+            });
+
+
+
+    });
+
+
+           // Function to fetch and populate facilities list
     function loadFacilities() {
         fetch('getArgi.php', {
             method: 'POST',
@@ -548,11 +765,9 @@
         .then(data => {
             const facilitiesList = document.getElementById('facilitiesList');
             const facilitiesSelect = document.getElementById('facilitiesSelect');
-            const facilitySelectEmails = document.getElementById('facilitySelectEmails');
             
             facilitiesList.innerHTML = ''; // Clear the list
             facilitiesSelect.innerHTML = ''; // Clear the dropdown
-            facilitySelectEmails.innerHTML = ''; // Clear the dropdown
 
             // Populate the list and dropdown with retrieved data
             data.forEach(facility => {
@@ -566,12 +781,6 @@
                 option.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
                 option.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
                 facilitiesSelect.appendChild(option);
-
-                const option2 = document.createElement('option');
-                option2.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
-                option2.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
-                facilitySelectEmails.appendChild(option2);
-
             });
         })
         .catch(error => {
@@ -696,53 +905,28 @@
             .then(response => response.json())
             .then(data => {
                 const infectionsList = document.getElementById('infectionsList');
+                const infectionsSelect = document.getElementById('infectionName');
                 infectionsList.innerHTML = ''; // Clear the list
+        
+                // Create an empty object to store unique virus IDs and names
+                const uniqueViruses = {};
+        
                 // Populate the list
                 data.forEach(infection => {
                     const listItem = document.createElement('li');
                     listItem.textContent = 'Name: ' + infection.firstName + " " + infection.lastName + ', Medicare ID: ' + infection.medicareID + ', Infection Name: ' + infection.virusName + ', Infection Date: ' + infection.infectionDate;
                     infectionsList.appendChild(listItem);
                     infectionsList.appendChild(document.createTextNode('\u00A0'));
-                });
-            })
-            .catch(error => {
-                console.error('Error loading infections:', error);
-            });
-        }
-
-        // Function to fetch and populate Virus list
-        function loadViruses(){
-            fetch('getArgi.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'getViruses' // This action should match the one in your PHP script
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                
-                const infectionsSelect = document.getElementById('infectionName');
-                infectionsSelect.innerHTML = ''; // Clear the list
-        
-                // Create an empty object to store unique virus IDs and names
-                const uniqueViruses = {};
-        
-                // Populate the list
-                data.forEach(virus => {
-                    const listItem = document.createElement('li');
         
                     // Add only unique virus IDs and names to the dropdown
-                    if (!uniqueViruses[virus.vID]) {
+                    if (!uniqueViruses[infection.vID]) {
                         const option = document.createElement('option');
-                        option.value = virus.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = virus.type; // Replace 'virusName' with the appropriate property name
+                        option.value = infection.vID; // Replace 'vID' with the appropriate property name for virus ID
+                        option.textContent = infection.virusName; // Replace 'virusName' with the appropriate property name
                         infectionsSelect.appendChild(option);
         
                         // Mark the virus ID as encountered
-                        uniqueViruses[virus.vID] = true;
+                        uniqueViruses[infection.vID] = true;
                     }
                 });
             })
@@ -765,7 +949,11 @@
             .then(response => response.json())
             .then(data => {
                 const vaccinationsList = document.getElementById('vaccinationsList');
+                const vaccinationsSelect = document.getElementById('vaccineName');
                 vaccinationsList.innerHTML = ''; // Clear the list
+        
+                // Create an empty object to store unique virus IDs and names
+                const uniqueVaccines = {};
         
                 // Populate the list
                 data.forEach(vaccination => {
@@ -773,97 +961,91 @@
                     listItem.textContent = 'Name: ' + vaccination.firstName + " " + vaccination.lastName + ', Medicare ID: ' + vaccination.medicareID + ', Vaccine Name: ' + vaccination.vaccineName + ', Number of Doses: ' + vaccination.numDose + ', Vaccine Date: ' + vaccination.date;
                     vaccinationsList.appendChild(listItem);
                     vaccinationsList.appendChild(document.createTextNode('\u00A0'));
+        
+                    // Add only unique virus IDs and names to the dropdown
+                    if (!uniqueVaccines[vaccination.vID]) {
+                        const option = document.createElement('option');
+                        option.value = vaccination.vID; // Replace 'vID' with the appropriate property name for virus ID
+                        option.textContent = vaccination.vaccineName; // Replace 'virusName' with the appropriate property name
+                        vaccinationsSelect.appendChild(option);
+        
+                        // Mark the virus ID as encountered
+                        uniqueVaccines[vaccination.vID] = true;
+                    }
                 });
             })
             .catch(error => {
                 console.error('Error loading vaccinations:', error);
             });
         }
-         // Function to fetch and populate infections list
-         function loadVaccineTypes(){
-            fetch('getArgi.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'getVaccines' // This action should match the one in your PHP script
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                
-                const vaccineSelect = document.getElementById('vaccineName');
-                vaccineSelect.innerHTML = ''; // Clear the list
-        
-                // Create an empty object to store unique virus IDs and names
-                const uniqueVaccines= {};
-        
-                // Populate the list
-                data.forEach(vaccines => {
-                    const listItem = document.createElement('li');
-        
-                    // Add only unique virus IDs and names to the dropdown
-                    if (!uniqueVaccines[vaccines.vID]) {
-                        const option = document.createElement('option');
-                        option.value = vaccines.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = vaccines.vaccineName; // Replace 'virusName' with the appropriate property name
-                        vaccineSelect.appendChild(option);
-        
-                        // Mark the virus ID as encountered
-                        uniqueVaccines[vaccines.vID] = true;
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading infections:', error);
-            });
-        }
-        function populateEmailList(emails) {
-            const emailList = document.getElementById("emailList");
-            emailList.innerHTML = ""; // Clear the list first
-    
-            // Populate the list with email data
-            emails.forEach(email => {
-                const listItem = document.createElement("li");
-                listItem.innerHTML = `
-                    <strong>Subject:</strong> ${email.subject}<br>
-                    <strong>Receiver:</strong> ${email.receiverEmail}<br>
-                    <strong>Date:</strong> ${email.dateOfEmail}<br>
-                    <strong>Facility:</strong> ${email.facilityName}<br>
-                    <p>${email.emailBody}</p>
-                `;
-                emailList.appendChild(listItem);
-            });
-        }
 
 
         function sendDataToPhp(action, data) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "mainpageArgi.php", true);
-                    xhr.setRequestHeader("Content-Type", "application/json");
-
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState === 4) {
-                            if (xhr.status === 200) {
-                                var response = JSON.parse(xhr.responseText);
-                                console.log(response.message); // Display the response message
-                            } else {
-                                console.error("Request failed with status: " + xhr.status);
-                                // Handle the error condition appropriately
-                            }
-                        }
-                    };
-
-                    var requestData = {
-                        action: action,
-                        data: data
-                    };
-
-                    var jsonData = JSON.stringify(requestData);
-                    console.log(jsonData);
-                    xhr.send(jsonData);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "mainpageArgi.php", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    console.log(response.message); // Display the response message
                 }
+            };
+
+            var jsonData = JSON.stringify({
+                action: action,
+                data: data
+            });
+            console.log(jsonData)
+            xhr.send(jsonData);
+        }
+        function delDataToPhp(action, data) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "delArgi.php", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    console.log(response.message); // Display the response message
+                }
+            };
+
+            var jsonData = JSON.stringify({
+                action: action,
+                data: data
+            });
+            console.log(jsonData);
+            xhr.send(jsonData);
+        }
+        function editDataPhp(action, data) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "editArgi.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            console.log(response.message);
+                        } else if (response.error) {
+                            console.error(response.error);
+                        }
+                    } catch (error) {
+                        console.error("Error parsing response:", error);
+                    }
+                } else {
+                    console.error("Request failed with status:", xhr.status);
+                }
+            }
+        };
+
+        var jsonData = JSON.stringify({
+            action: action,
+            data: data
+        });
+        xhr.send(jsonData);
+        }
+
 
         function convertTo24HourFormat(time) {
             const [timePart, period] = time.split(' ');
@@ -891,8 +1073,21 @@
         window.addEventListener('DOMContentLoaded', loadEmployeesSchedule);
         window.addEventListener('DOMContentLoaded', loadInfections);
         window.addEventListener('DOMContentLoaded', loadVaccinations);
-        window.addEventListener('DOMContentLoaded', loadViruses);
-        window.addEventListener('DOMContentLoaded', loadVaccineTypes);
+
+        //Load the page when delete button is clicked
+        deletefacilitiesButton.addEventListener('click', loadFacilities);
+        editfacilitiesButton.addEventListener('click', loadFacilities);
+        deleteStudentButton.addEventListener('click', loadStudents);
+        editStudentButton.addEventListener('click', loadStudents);
+        deleteEmployeeButton.addEventListener('click', loadEmployees);
+        editEmployeeButton.addEventListener('click', loadEmployees);
+        deleteEmployeeScheduleButton.addEventListener('click', loadEmployeesSchedule);
+        editEmployeeScheduleButton.addEventListener('click', loadEmployeesSchedule);
+        deleteInfectionsButton.addEventListener('click', loadInfections);
+        editInfectionsButton.addEventListener('click', loadInfections);
+        deleteVaccinationsButton.addEventListener('click', loadVaccinations);
+        editVaccinationsButton.addEventListener('click', loadVaccinations);
+        
 
     </script>
 </body>
