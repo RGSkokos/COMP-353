@@ -807,13 +807,13 @@
                 facilitiesList.appendChild(document.createTextNode('\u00A0')); 
 
                 const option = document.createElement('option');
-                option.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
-                option.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
+                option.value = facility.fID; 
+                option.textContent = facility.facilityName; 
                 facilitiesSelect.appendChild(option);
 
                 const option2 = document.createElement('option');
-                option2.value = facility.fID; // Replace 'id' with the appropriate property name for facility ID
-                option2.textContent = facility.facilityName; // Replace 'name' with the appropriate property name
+                option2.value = facility.fID;
+                option2.textContent = facility.facilityName;
                 facilitySelectEmails.appendChild(option2);
             });
         })
@@ -849,8 +849,8 @@
                     
 
                     const option = document.createElement('option');
-                    option.value = student.medicareID; // Replace 'id' with the appropriate property name for facility ID
-                    option.textContent = student.firstName + " " + student.lastName; // Replace 'name' with the appropriate property name
+                    option.value = student.medicareID;
+                    option.textContent = student.firstName + " " + student.lastName; 
                     studentSelect.appendChild(option);
                 });
             })
@@ -867,7 +867,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'getEmployees' // This action should match the one in your PHP script
+                    action: 'getEmployees'
                 }),
             })
             .then(response => response.json())
@@ -886,8 +886,8 @@
                     employeesList.appendChild(document.createTextNode('\u00A0')); 
 
                     const option = document.createElement('option');
-                    option.value = employee.medicareID; // Replace 'id' with the appropriate property name for facility ID
-                    option.textContent = employee.firstName + " " + employee.lastname; // Replace 'name' with the appropriate property name
+                    option.value = employee.medicareID; 
+                    option.textContent = employee.firstName + " " + employee.lastname; 
                     employeesSelect.appendChild(option);
                 });
             })
@@ -905,7 +905,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'getEmployeeSchedules' // This action should match the one in your PHP script
+                    action: 'getEmployeeSchedules' 
                 }),
             })
             .then(response => response.json())
@@ -933,7 +933,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'getInfections' // This action should match the one in your PHP script
+                    action: 'getInfections'
                 }),
             })
             .then(response => response.json())
@@ -955,8 +955,8 @@
                     // Add only unique virus IDs and names to the dropdown
                     if (!uniqueViruses[infection.vID]) {
                         const option = document.createElement('option');
-                        option.value = infection.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = infection.virusName; // Replace 'virusName' with the appropriate property name
+                        option.value = infection.vID; 
+                        option.textContent = infection.virusName; 
                         infectionsSelect.appendChild(option);
         
                         // Mark the virus ID as encountered
@@ -976,7 +976,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'getViruses' // This action should match the one in your PHP script
+                    action: 'getViruses'
                 }),
             })
             .then(response => response.json())
@@ -995,8 +995,8 @@
                     // Add only unique virus IDs and names to the dropdown
                     if (!uniqueViruses[virus.vID]) {
                         const option = document.createElement('option');
-                        option.value = virus.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = virus.type; // Replace 'virusName' with the appropriate property name
+                        option.value = virus.vID; 
+                        option.textContent = virus.type; 
                         infectionsSelect.appendChild(option);
         
                         // Mark the virus ID as encountered
@@ -1018,7 +1018,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'getVaccinations' // This action should match the one in your PHP script
+                    action: 'getVaccinations' 
                 }),
             })
             .then(response => response.json())
@@ -1040,8 +1040,8 @@
                     // Add only unique virus IDs and names to the dropdown
                     if (!uniqueVaccines[vaccination.vID]) {
                         const option = document.createElement('option');
-                        option.value = vaccination.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = vaccination.vaccineName; // Replace 'virusName' with the appropriate property name
+                        option.value = vaccination.vID; 
+                        option.textContent = vaccination.vaccineName; 
                         vaccinationsSelect.appendChild(option);
         
                         // Mark the virus ID as encountered
@@ -1061,7 +1061,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'getVaccines' // This action should match the one in your PHP script
+                    action: 'getVaccines'
                 }),
             })
             .then(response => response.json())
@@ -1080,8 +1080,8 @@
                     // Add only unique virus IDs and names to the dropdown
                     if (!uniqueVaccines[vaccines.vID]) {
                         const option = document.createElement('option');
-                        option.value = vaccines.vID; // Replace 'vID' with the appropriate property name for virus ID
-                        option.textContent = vaccines.vaccineName; // Replace 'virusName' with the appropriate property name
+                        option.value = vaccines.vID; 
+                        option.textContent = vaccines.vaccineName; 
                         vaccineSelect.appendChild(option);
         
                         // Mark the virus ID as encountered
@@ -1199,7 +1199,7 @@
             return `${hours}:${minutes}:${seconds}`;
         }
 
-        // Load facilities when the page is loaded or refreshed
+       
         window.addEventListener('DOMContentLoaded', loadFacilities);
         window.addEventListener('DOMContentLoaded', loadStudents);
         window.addEventListener('DOMContentLoaded', loadEmployees);
@@ -1208,7 +1208,7 @@
         window.addEventListener('DOMContentLoaded', loadVaccinations);
         window.addEventListener('DOMContentLoaded', loadViruses);
         window.addEventListener('DOMContentLoaded', loadVaccineTypes);
-        //Load the page when delete button is clicked
+      
         deletefacilitiesButton.addEventListener('click', loadFacilities);
         editfacilitiesButton.addEventListener('click', loadFacilities);
         deleteStudentButton.addEventListener('click', loadStudents);
